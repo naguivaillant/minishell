@@ -6,7 +6,7 @@
 #    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/02 13:38:25 by mrabourd          #+#    #+#              #
-#    Updated: 2023/05/02 15:49:18 by mrabourd         ###   ########.fr        #
+#    Updated: 2023/05/10 16:01:48 by mrabourd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,11 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra
 
 SRC = 	main.c					\
-		path.c
+		path.c					\
+		env.c					\
+		export.c				\
+		eccho.c					\
+		exit.c
 
 SRC_ALL = ${addprefix ${SRC_DIR},${SRC}}
 
