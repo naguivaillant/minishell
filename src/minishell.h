@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 13:29:02 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/10 18:16:37 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/11 19:02:08 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,10 @@
 # include <readline/history.h>
 # include "../libft/libft.h"
 
-// typedef struct s_list
-// {
-// 	void			*content;
-// 	struct s_list	*next;
-// 	int				type;/*genre 1=fd, 2=cmd, 3=pipe, 4=....*/
-// }	t_list;
-
 typedef struct s_path
 {
-	char *line;
-	char **tab;
+	char	*line;
+	char	**tab;
 }				t_path;
 
 typedef struct s_data
@@ -46,6 +39,7 @@ typedef struct s_data
 }				t_data;
 
 /* MAIN */
+void	print_all(t_data *data);
 void	fill_cmd_list(t_data *data);
 
 /* PATH */
