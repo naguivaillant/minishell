@@ -6,27 +6,75 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 14:32:12 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/15 16:59:17 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/18 16:32:47 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_strchrint(const char *s, char c)
+int		is_metacharacter(char c)
 {
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == c)
-			return (i);
-		i++;
-	}
-	if (c == '\0')
-		return (ft_strlen(s));
-	return (-1);
+	if (c == '|' || c == '&' || c == ';')
+		return (1);
+	if (c == '(' || c == ')')
+		return (1);
+	if (c == '<' || c == '>')
+		return (1);
+	return (0);
 }
+
+int		is_space(char c)
+{
+	if (c == ' ' || c == '\t' | c == '\n')
+		return (1);
+	if (c == '\v' || c == '\f' | c == '\r')
+		return (1);
+	return (0);
+}
+
+// void	replace_input(t_data *data, int add)
+// {
+// 	char	*new_input;
+
+// 	new_input = NULL;
+// 	new_input = malloc (sizeof(char) * (add + ft_strlen(data->input) + 1));
+// 	if (new_input == NULL)
+// 		free_all(data);
+// }
+
+// void	add_space(t_data *data)
+// {
+// 	int		i;
+// 	int		add;
+
+// 	i = 0;
+// 	add = 0;
+// 	while (data->input[i])
+// 	{
+// 		if (is_metacharacter(data->input[i]))
+// 		{
+// 			if (data->input[i - 1] && is_space(data->input[i - 1]) == 0)
+// 				add++;
+// 			i++;
+// 			if (data->input[i] && is_space(data->input[i]) == 0)
+// 				add++;
+// 		}
+// 		i++;
+// 	}
+// 	if (add == 0)
+// 		return ;
+// 	replace_input(&data, add);
+// }
+
+/*
+		-ajouter des espaces entre chaque token// entre les metacharacters : 
+				space, tab, newline, ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’ -> dans str input
+			et changer \n ou \t en espace normal
+		-separer chaque token en fonction des espaces -> en creant une liste
+		-en meme temps, faire en sorte que si un quote est ouvert, le token reste le meme, 
+				et ne passe au suivant que quand le prochain quote est trouve
+		-si quote pas ferme, incorrect -> free all
+*/
 
 int		check_quotes(char *str)
 {
@@ -41,12 +89,7 @@ int		check_quotes(char *str)
 			quote++;
 		i++;
 	}
-	return (i);
-}
-
-void	add_str(t_data *data)
-{
-	
+	return (quote);
 }
 
 void	parse_cmd(t_data *data)
@@ -61,21 +104,6 @@ void	parse_cmd(t_data *data)
 	str = NULL;
 	quotes = check_quotes(data->input);
 	if (quotes % 2 != 0)
-		exit_all(data); /*--> check bash pour savoir comment gerer quand nb de quotes est impair*/
-	if (quotes == 0)
-	{
-		data->cmd = ft_split(str, ' ');
-		fill_cmd_list(&data);
-		return ;
-	}  
-	if (quotes % 2 == 0)
-	{
-		pos = ft_strchrint(data->input, "\"");
-		str = ft_split(data->input, "\"");
-		if (pos != 0)/*ca veut dire que le 1er quote n'est pas au debut des commandes donc on peut split le debut*/
-		{
-			data->cmd = ft_split(str[i], " ");
-			
-		}
-	}
+		exit_all(data, 1); /*--> check bash pour savoir comment gerer quand nb de quotes est impair*/
+	split_in_list(data, data->input);
 }
