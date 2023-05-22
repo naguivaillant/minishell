@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/20 17:42:27 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/22 18:06:55 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	print_all(t_data *data)
 	while (tmp != NULL)
 	{
 		printf("%s\n", tmp->content);
+		// printf("type: %u\n", tmp->type);
 		// printf("%d\n", tmp->printed);
 		tmp = tmp->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 15:08:29 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/20 17:43:06 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/21 15:22:50 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ void	add_node(t_data *data, char *str, int i, int j)
 	if (tmp == NULL || str == NULL)
 		exit_all(data, 1);
 	new = ft_lstnew(tmp);
+	free (tmp);
 	ret = ft_lstadd_back(&data->token_list, new);
 	if (ret == 1)
 		exit_all(data, 1);
-	// free (tmp);
 }

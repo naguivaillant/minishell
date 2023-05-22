@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 17:53:43 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/20 16:27:39 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/22 18:56:50 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,30 @@
 static void	split_meta(t_data *data, char *str, int *i, int *j)
 {
 	(*i)++;
-	if (str[*i] && str[*i] == str[*j])
+	if (str[*i] && *i + 1 < (int)ft_strlen(str) && str[*i] == str[*j])
 	{
-		(*i)++;/* probleme si on termine par un double meta */
-		add_node(data, str, *i, *j);
-		while (str[*i] && is_space(str[*i]) == 1)
+		while (*i + 1 < (int)ft_strlen(str) && str[*i] == str[*j])
 			(*i)++;
-		if (str[*i])
-			*j = *i;
-		else
+		if (*i + 1 < (int)ft_strlen(str))
+			add_node(data, str, *i, *j);
+		else if (*i + 1 == (int)ft_strlen(str) && str[*i] == str[*j])
+		{
+			add_node(data, str, *i + 1, *j);
+			*j = *i + 1;
 			return ;
+		}
+		else if (*i + 1 == (int)ft_strlen(str) && str[*i] != str[*j])
+		{
+			add_node(data, str, *i, *j);
+			*j = *i;
+			return ;
+		}
+	}
+	else if (str[*i] && *i + 1 == (int)ft_strlen(str))
+	{
+		add_node(data, str, *i + 1, *j);
+		*j = (int)ft_strlen(str);
+		return ;
 	}
 	else
 		add_node(data, str, *i, *j);
@@ -34,14 +48,14 @@ static void	split_meta(t_data *data, char *str, int *i, int *j)
 	(*i)--;
 }
 
-static void	split_quotes(t_data *data, char *str, int *i, int *j)
+static void	split_double_quotes(t_data *data, char *str, int *i, int *j)
 {
 	(*i)++;
 	if (str[*i])
 		*j = *i;
 	else
 		return ;
-	while (str[*i] != '\"')
+	while (str[*i] && str[*i] != '\"')
 	{
 		(*i)++;
 	}
@@ -57,6 +71,35 @@ static void	split_quotes(t_data *data, char *str, int *i, int *j)
 		else
 			return ;
 	}
+	else
+		exit_all(data, 1);
+}
+
+static void	split_simple_quotes(t_data *data, char *str, int *i, int *j)
+{
+	(*i)++;
+	if (str[*i])
+		*j = *i;
+	else
+		return ;
+	while (str[*i] && str[*i] != '\'')
+	{
+		(*i)++;
+	}
+	if (str[*i] == '\'')
+	{
+		add_node(data, str, *i, *j);
+		if (str[*i])
+		{
+			(*i)++;
+			*j = *i;
+			(*i)--;
+		}
+		else
+			return ;
+	}
+	else
+		exit_all(data, 1);
 }
 
 /* A NORMER */
@@ -70,7 +113,8 @@ void	split_in_list(t_data *data, char *str)
 	str = ft_strtrim(str, " ");
 	while (str[i])
 	{	
-		if (j != i && (is_metacharacter(str[i]) == 1 || is_space(str[i]) == 1 || str[i] == '\"'))
+		if (str[i] && j != i && (is_metacharacter(str[i]) == 1 
+			|| is_space(str[i]) == 1 || str[i] == '\"' || str[i] == '\''))
 		{
 			add_node(data, str, i, j);
 			while (str[i] && is_space(str[i]) == 1)
@@ -86,7 +130,9 @@ void	split_in_list(t_data *data, char *str)
 		if (str[i] && i == j && is_metacharacter(str[i]) == 1)
 			split_meta(data, str, &i, &j);
 		if (str[i] && i == j && str[i] == '\"')
-			split_quotes(data, str, &i, &j);
+			split_double_quotes(data, str, &i, &j);
+		if (str[i] && i == j && str[i] == '\'')
+			split_simple_quotes(data, str, &i, &j);
 		i++;
 	}
 	if (j != i && is_space(str[j]) == 0)
