@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 15:20:31 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/04 14:48:48 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/22 18:03:10 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,37 @@
 # include <stdio.h>
 # include <stdlib.h>
 
+typedef enum	e_type
+{
+	SIMPLE_QUOTE,
+	DOUBLE_QUOTE,
+	PIPE,
+	COMMANDE,
+	OPTION,
+	INFILE,
+	OUTFILE,
+	REDIRECT_INPUT,
+	REDIRECT_OUTPUT,
+	DELIMITER_INPUT,
+	DELIMITER_APPEND,
+	DOLLAR,
+	EPERLUETTE,
+	WORD,
+	SEMICOLON,
+	PARENTHESIS,
+	BLANCK,
+}				t_type;
+
 typedef struct s_list
 {
-	void			*content;
+	char			*content;
 	struct s_list	*next;
-	int				full;/*si valeur remplie ou pas, pour export/env*/
+	int				full;/*si valeur remplie = 0, sinon = 1, pour export/env*/
 	int				printed;/*si deja imprime, pour export 'sort' */
+	t_type			type;/* dans minishell.h */
 }	t_list;
 
+void	del(void *content);
 int		ft_isdigit(int c);
 int		ft_isalpha(int c);
 int		ft_isalnum(int c);
@@ -59,7 +82,7 @@ void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void	ft_striteri(char *s, void (*f)(unsigned int, char *));
-t_list	*ft_lstnew(void *content);
+t_list	*ft_lstnew(char *content);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);
