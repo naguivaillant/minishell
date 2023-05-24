@@ -6,11 +6,11 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:01:01 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/11 19:27:42 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/24 16:26:05 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 void	fill_env_list(char **env, t_data *data)
 {
@@ -26,11 +26,11 @@ void	fill_env_list(char **env, t_data *data)
 		while (env[i])
 		{
 			new = ft_lstnew(env[i]);
+			if (ft_strchr(env[i], '=') == 0)
+				new->full = 1;
 			res = ft_lstadd_back(&data->env, new);
 			if (res == 1)
-			{
-				exit_all(data);
-			}
+				exit_all(data, 1);
 			i++;
 		}
 	}
@@ -53,12 +53,15 @@ int	count_list(t_list *list)
 
 void	print_env(t_data *data)
 {
+	t_list	*tmp;
+
+	tmp = data->env;
 	// int count = count_list(data->env);
 	// printf("count %d\n", count);
-	while (data->env)
+	while (tmp)
 	{
-		if (data->env->full == 0)
-			printf("%s\n", (char *)data->env->content);
-		data->env = data->env->next;
+		if (tmp->full == 0)
+			printf("%s\n", (char *)tmp->content);
+		tmp = tmp->next;
 	}
 }
