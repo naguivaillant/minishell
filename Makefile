@@ -3,56 +3,59 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
+#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/05/02 13:38:25 by mrabourd          #+#    #+#              #
-#    Updated: 2023/05/10 16:01:48 by mrabourd         ###   ########.fr        #
+#    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
+#    Updated: 2023/05/24 15:56:50 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = minishell
+SRC_DIR		=	src/
+OBJ_DIR		=	obj/
+DIR_LIB		=	./libft
+NAMELFT		=	./libft/libft.a
+NAME		=	minishell
+INCLUDE		=	-I./include -I./libft/include
+CC		=	cc
+CFLAGS		=	-Wall -Wextra -Werror 
+Make		=	Make
 
-CC = cc
+FILES = 	main                                  \
+                path                                  \
+                env                                   \
+                export                                \
+                eccho                                 \
+                assign_type			      \
+		parsing_cmd			      \
+		split_list			      \
+		split_list_utils		      \
+		exit
 
-CFLAGS = -Wall -Werror -Wextra
+SRC = $(addprefix $(SRC_DIR), $(addsuffix .c, $(FILES)))
+OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(FILES)))
 
-SRC = 	main.c					\
-		path.c					\
-		env.c					\
-		export.c				\
-		eccho.c					\
-		exit.c
+OBJF = .cache_exists
 
-SRC_ALL = ${addprefix ${SRC_DIR},${SRC}}
+$(OBJF):
+	@mkdir -p $(OBJ_DIR)
 
-SRC_DIR = src/
+all: $(NAME)
 
-OBJ_DIR = obj/
+$(OBJ_DIR)%.o	: $(SRC_DIR)%.c | $(OBJF)
+	@make -C $(DIR_LIB)
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
-LIBFT_DIR = libft
+$(NAME)    :    $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
-OBJ_ALL = ${SRC_ALL:.c=.o}
+clean    :
+	@rm -rf $(OBJ_DIR)
+	@rm -f $(OBJF)
+	@cd $(DIR_LIB) && $(MAKE) clean
 
-OBJ = ${subst ${SRC_DIR}, ${OBJ_DIR}, ${OBJ_ALL}}
+fclean    :    clean
+	@rm -f $(NAME)
 
-all : make_lib ${NAME}
+re        :    fclean all
 
-make_lib :
-	@make -C ${LIBFT_DIR}
-
-${NAME} : ${OBJ}
-	${CC} ${OBJ} -lreadline ${CFLAGS} libft/libft.a -o ${NAME}
-
-${OBJ_DIR}%.o : ${SRC_DIR}%.c
-	${CC} ${CFLAGS} -I/usr/include -c $< -o $@
-
-clean :
-	rm -f ${OBJ}
-
-fclean : clean
-	make -C ${LIBFT_DIR} fclean
-	rm -f ${NAME}
-
-re : fclean all
-
-.PHONY : all clean fclean re
+.PHONY    :    all clean fclean re
