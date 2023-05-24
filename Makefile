@@ -1,61 +1,69 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
-#    Updated: 2023/05/24 15:56:50 by marvin           ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME = libft.a
 
-SRC_DIR		=	src/
-OBJ_DIR		=	obj/
-DIR_LIB		=	./libft
-NAMELFT		=	./libft/libft.a
-NAME		=	minishell
-INCLUDE		=	-I./include -I./libft/include
-CC		=	cc
-CFLAGS		=	-Wall -Wextra -Werror 
-Make		=	Make
+CC = gcc
 
-FILES = 	main                                  \
-                path                                  \
-                env                                   \
-                export                                \
-                eccho                                 \
-                assign_type			      \
-		parsing_cmd			      \
-		split_list			      \
-		split_list_utils		      \
-		exit
+CFLAGS = -Wall -Werror -Wextra
 
-SRC = $(addprefix $(SRC_DIR), $(addsuffix .c, $(FILES)))
-OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(FILES)))
+SRC =	ft_isalpha.c \
+		ft_isdigit.c \
+		ft_isalnum.c \
+		ft_isascii.c \
+		ft_isprint.c \
+		ft_strlen.c \
+		ft_memset.c \
+		ft_bzero.c \
+		ft_memcpy.c \
+		ft_memmove.c \
+		ft_strlcpy.c \
+		ft_strlcat.c \
+		ft_toupper.c \
+		ft_tolower.c \
+		ft_strchr.c \
+		ft_strrchr.c \
+		ft_strncmp.c \
+		ft_memchr.c \
+		ft_memcmp.c \
+		ft_strnstr.c \
+		ft_atoi.c \
+		ft_calloc.c \
+		ft_strdup.c \
+		ft_substr.c \
+		ft_strjoin.c \
+		ft_strtrim.c \
+		ft_split.c \
+		ft_putchar_fd.c \
+		ft_putstr_fd.c \
+		ft_putendl_fd.c \
+		ft_putnbr_fd.c \
+		ft_itoa.c \
+		ft_strmapi.c \
+		ft_striteri.c \
+		ft_lstnew.c \
+		ft_lstadd_front.c \
+		ft_lstsize.c \
+		ft_lstlast.c \
+		ft_lstadd_back.c \
+		ft_lstdelone.c \
+		ft_lstclear.c \
+		ft_lstiter.c \
+		ft_lstmap.c
 
-OBJF = .cache_exists
+OBJ = ${SRC:.c=.o} 
 
-$(OBJF):
-	@mkdir -p $(OBJ_DIR)
+all : ${NAME}
 
-all: $(NAME)
+$(NAME) : ${OBJ}
+	ar -rcs ${NAME} ${OBJ}
 
-$(OBJ_DIR)%.o	: $(SRC_DIR)%.c | $(OBJF)
-	@make -C $(DIR_LIB)
-	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+.c.o :
+	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
-$(NAME)    :    $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+clean :
+	rm -f ${OBJ}
 
-clean    :
-	@rm -rf $(OBJ_DIR)
-	@rm -f $(OBJF)
-	@cd $(DIR_LIB) && $(MAKE) clean
+fclean : clean
+	rm -f ${NAME} a.out
 
-fclean    :    clean
-	@rm -f $(NAME)
+re : fclean all
 
-re        :    fclean all
-
-.PHONY    :    all clean fclean re
+.PHONY : all clean fclean re
