@@ -34,10 +34,56 @@ typedef struct s_data
 {
 	char		*input;
 	char		**cmd;
-	t_list		*token_list;
-	t_list		*env;
 	t_path		path;
 }				t_data;
+
+typedef struct s_token					//pour definir le type
+{
+	char	*str;
+	int		type;
+}	t_token;
+
+typedef struct s_command				//ma gestion du parsing de commandes
+{
+	char	*fdin;
+	char	*fdout;
+	int		ofdout;
+	int		ofdin;
+	char	*error;
+	char	**cmd;
+	char	*file;
+	int		type;
+}	t_command;
+
+
+typedef struct s_pos
+{
+	struct s_list	*start;				//pour acceder a la liste chainee
+	int				*size;
+}	t_pos;
+
+typedef struct s_list
+{
+	struct s_list	*next;				//liste double chainee apres
+	struct s_list	*back;				//liste doucle chainee avant
+	void			*content;
+	struct s_pos	*pos;				//pour acceder aux postiions ou on est
+}	t_list;
+
+typedef struct s_minishell
+{
+	t_pos		*garbage;			//pour acceder a l'input
+	t_pos		*garbagecmd;			//pour acceder a l'input quand c'est une commande
+	int			heredoc;		//utils du heredoc
+	int			heredocprompt;		//tout pareil
+	char		**argv;
+	int			argc;
+	int			*pipe;			//pour stocker les pipes
+	char		*error;				//pour print les erreurs plus simplement
+	t_pos		*tokenlist;			//pour definir le type
+	int			laststatus;		//pour le signal
+	int			fdutil;			//pour les redirections
+}	t_minishell;
 
 /* MAIN */
 void	print_all(t_data *data);
@@ -77,3 +123,4 @@ void	free_tab(char **tab);
 void	exit_all(t_data *data, int err);
 
 #endif
+
