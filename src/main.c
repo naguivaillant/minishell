@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/24 16:26:14 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:41:47 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	print_all(t_data *data)
 	while (tmp != NULL)
 	{
 		printf("%s\n", tmp->content);
-		// printf("type: %u\n", tmp->type);
+		printf("type: %u\n", tmp->type);
 		// printf("%d\n", tmp->printed);
 		tmp = tmp->next;
 	}
@@ -69,7 +69,7 @@ int	main(int argc, char **argv, char **env)
 	ft_bzero(&data.env, sizeof(data.env));
 	// printf("&data.env %s\n", (char *)&data.env->content);
 	if (!env || env == NULL || argc != 1)
-		exit_all(&data, 1);
+		exit_all(&data, 1, "There is a problem with the arguments or the environment");
 	parse_path(env, &data);
 	// fill_env_list(env, &data);
 	while (1)
@@ -79,11 +79,12 @@ int	main(int argc, char **argv, char **env)
 		data.input = readline("Minishell>");
 		if (!data.input)
 		{
-			exit_all(&data, 0);
+			exit_all(&data, 0, NULL);
 		}
 		add_history(data.input);
 		parse_cmd(&data);
 	//	execution(&data);a faire
+		ft_lstclear(&data.token_list, del);
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:33:03 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/24 16:25:49 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:38:26 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	free_tab(char **tab)
 	free (tab);
 }
 
-void	exit_all(t_data *data, int err)
+void	exit_all(t_data *data, int err, char *str)
 {
 	// if (data->env && data->env != NULL)
 	// {
@@ -39,6 +39,7 @@ void	exit_all(t_data *data, int err)
 		free_tab(data->path.tab);
 	if (data->path.line && data->path.line != NULL)
 		free (data->path.line);
+	printf("%s\n", str);
 	if (err == 1)
 	{
 		exit(EXIT_FAILURE);

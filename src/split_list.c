@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 17:53:43 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/24 16:26:25 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:44:11 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	split_double_quotes(t_data *data, char *str, int *i, int *j)
 	}
 	if (str[*i] == '\"')
 	{
-		add_node(data, str, *i, *j);
+		add_node_quote(data, str, *i, *j);
 		if (str[*i])
 		{
 			(*i)++;
@@ -72,7 +72,7 @@ static void	split_double_quotes(t_data *data, char *str, int *i, int *j)
 			return ;
 	}
 	else
-		exit_all(data, 1);
+		exit_all(data, 1, "There is a double quote missing");
 }
 
 static void	split_simple_quotes(t_data *data, char *str, int *i, int *j)
@@ -88,7 +88,7 @@ static void	split_simple_quotes(t_data *data, char *str, int *i, int *j)
 	}
 	if (str[*i] == '\'')
 	{
-		add_node(data, str, *i, *j);
+		add_node_quote(data, str, *i, *j);
 		if (str[*i])
 		{
 			(*i)++;
@@ -99,7 +99,7 @@ static void	split_simple_quotes(t_data *data, char *str, int *i, int *j)
 			return ;
 	}
 	else
-		exit_all(data, 1);
+		exit_all(data, 1, "There is a simple quote missing");
 }
 
 /* A NORMER */
@@ -110,7 +110,6 @@ void	split_in_list(t_data *data, char *str)
 
 	i = 0;
 	j = 0;
-	str = ft_strtrim(str, " ");
 	while (str[i])
 	{	
 		if (str[i] && j != i && (is_metacharacter(str[i]) == 1 
@@ -137,7 +136,6 @@ void	split_in_list(t_data *data, char *str)
 	}
 	if (j != i && is_space(str[j]) == 0)
 		add_node(data, str, i, j);
-	free (str);
 }
 
 /* CA MARCHE mais va falloir normer  :// */
