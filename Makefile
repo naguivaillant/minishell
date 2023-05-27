@@ -6,7 +6,7 @@
 #    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
-#    Updated: 2023/05/24 16:37:18 by mrabourd         ###   ########.fr        #
+#    Updated: 2023/05/27 13:38:58 by mrabourd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ NAMELFT		=	./libft/libft.a
 NAME		=	minishell
 INCLUDE		=	-I./include -I./libft/include
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror 
+CFLAGS		=	-Wall -Werror -Wextra
 Make		=	Make
 
 FILES = 	main					\
@@ -40,14 +40,16 @@ OBJF = .cache_exists
 $(OBJF):
 	@mkdir -p $(OBJ_DIR)
 
-all: $(NAME)
+all: make_lib $(NAME)
+
+make_lib : 
+	@make -C $(DIR_LIB)
 
 $(OBJ_DIR)%.o	: $(SRC_DIR)%.c | $(OBJF)
-	@make -C $(DIR_LIB)
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 $(NAME)    :    $(OBJ)
-	$(CC)  -lreadline  $(CFLAGS) $(OBJ) libft/libft.a  -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -lreadline libft/libft.a -o $(NAME)
 
 clean    :
 	@rm -rf $(OBJ_DIR)
