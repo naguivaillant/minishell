@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/26 18:41:47 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/27 14:10:00 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_all(t_data *data)
 	t_list	*tmp;
 
 	tmp = data->token_list;
-	printf("----START ALL-----\n");
+	// printf("----START ALL-----\n");
 	while (tmp != NULL)
 	{
 		printf("%s\n", tmp->content);
@@ -26,7 +26,7 @@ void	print_all(t_data *data)
 		tmp = tmp->next;
 	}
 	// printf("%d\n", tmp->printed);
-	printf("----END ALL-----\n");
+	// printf("----END ALL-----\n");
 }
 
 void	exec_cmd(t_data *data)
@@ -71,7 +71,7 @@ int	main(int argc, char **argv, char **env)
 	if (!env || env == NULL || argc != 1)
 		exit_all(&data, 1, "There is a problem with the arguments or the environment");
 	parse_path(env, &data);
-	// fill_env_list(env, &data);
+	fill_env_list(env, &data);
 	while (1)
 	{
 		signal(SIGINT, ft_handler);
@@ -83,20 +83,8 @@ int	main(int argc, char **argv, char **env)
 		}
 		add_history(data.input);
 		parse_cmd(&data);
-	//	execution(&data);a faire
+		// execution(&data); -> nagui
 		ft_lstclear(&data.token_list, del);
 	}
 	return (0);
 }
-
-/*
-OLD :
-		data.input = readline("Minishell>");
-		add_history(data.input);
-		// data.cmd = ft_split(data.input, ' ');  -> old one
-		parse_cmd(&data);
-		// fill_token_list(&data);
-		exec_cmd(&data);
-		ft_lstclear(&data.token_list, free);
-
-*/

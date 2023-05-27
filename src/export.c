@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:00:03 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/24 16:26:10 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/27 12:17:03 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,9 @@ void	back_to_zero(t_data *data)
 
 int	add_variable(t_data *data, t_list *pos)
 {
-	int		i;
-	int		y;
 	t_list	*tmp;
 	t_list	*new;
 
-	i = 0;
-	y = 0;
 	new = NULL;
 	tmp = pos;
 	if (pos->next != NULL)

@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:01:01 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/24 16:26:05 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/27 13:31:41 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	fill_env_list(char **env, t_data *data)
 				new->full = 1;
 			res = ft_lstadd_back(&data->env, new);
 			if (res == 1)
-				exit_all(data, 1);
+				exit_all(data, 1, "There is a problem to fill the env list");
 			i++;
 		}
 	}

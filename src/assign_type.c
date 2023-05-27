@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 16:28:44 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/26 18:39:03 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/27 16:54:08 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,17 @@ void	len_is_one(t_data *data, t_list *tmp)
 		tmp->type = BLANCK;
 }
 
+void	len_is_two(t_list *tmp)
+{
+	if (tmp->content[0] == '<' && tmp->content[1] == '<' && tmp->type == 0)
+	{
+		tmp->type = HEREDOC;
+		tmp->next->type = ENDOFFILE;
+	}
+	if (tmp->content[0] == '>' && tmp->content[1] == '>' && tmp->type == 0)
+		tmp->type = DELIMITER_APPEND;
+}
+
 void	type_dollar(t_list *tmp)
 {
 	int	i;
@@ -48,13 +59,11 @@ void	type_dollar(t_list *tmp)
 	}
 }
 
-void		type_option(t_list *tmp)
+void	type_option(t_list *tmp)
 {
 	size_t	i;
-	int		y;
 
 	i = 1;
-	y = 0;
 	while (tmp->content[i] && ft_isdigit(tmp->content[i]) == 1)
 		i++;
 	if (ft_strlen(tmp->content) == i)
@@ -71,23 +80,39 @@ void	redirection_file(t_list *tmp)
 		tmp->next->type = INFILE;
 }
 
-void	assign_type(t_data *data)
+void	check_quoted_phrase(t_list *tmp)
+{
+	int	i;
+
+	i = 0;
+	while (tmp->content[i])
+	{
+		if (tmp->content[i] == ' ')
+			return ;
+		i++;
+	}
+	tmp->type = COMMANDE; /* rechecker ce que ca peut etre */
+}
+
+void	assign_type(t_data *data)/* gerer rapidement les $variable <-- important */
 {
 	t_list	*tmp;
-	int		i;
 
 	tmp = data->token_list;
-	i = 0;
 	while (tmp != NULL)
 	{
 		if (ft_strlen(tmp->content) == 1)
 			len_is_one(data, tmp);
+		if (ft_strlen(tmp->content) == 2)
+			len_is_two(tmp);
 		if (tmp->type == REDIRECT_INPUT || tmp->type == REDIRECT_OUTPUT)
 			redirection_file(tmp);
 		if (tmp->content[0] == '$')
 			type_dollar(tmp);
 		if (tmp->content[0] == '-')
 			type_option(tmp);
+		if (tmp->type == QUOTED_PHRASE) /* pas forcement la meilleure facon de faire, a voir */
+			check_quoted_phrase(tmp);
 		tmp = tmp->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 15:08:29 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/26 18:43:39 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/27 16:33:09 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int		is_metacharacter(char c)
 
 int		is_space(char c)
 {
-	if (c == ' ' || c == '\t' | c == '\n')
+	if (c == ' ' || c == '\t' || c == '\n')
 		return (1);
-	if (c == '\v' || c == '\f' | c == '\r')
+	if (c == '\v' || c == '\f' || c == '\r')
 		return (1);
 	return (0);
 }
@@ -63,12 +63,12 @@ void	add_node(t_data *data, char *str, int i, int j)
 	new = NULL;
 	tmp = fill_tmp(&str[j], i - j);
 	if (tmp == NULL || str == NULL)
-		exit_all(data, 1, "There is a problem with the tmp when I try to add a node in the token list");
+		exit_all(data, 1, "There is a problem with malloc when I try to add a node in the token list");
 	new = ft_lstnew(tmp);
 	free (tmp);
 	ret = ft_lstadd_back(&data->token_list, new);
 	if (ret == 1)
-		exit_all(data, 1, "There is a problem with the tmp when I try to add a node in the end of token list");
+		exit_all(data, 1, "There is a problem with malloc when I try to add a node in the end of token list");
 }
 
 void	add_node_quote(t_data *data, char *str, int i, int j)
@@ -81,11 +81,11 @@ void	add_node_quote(t_data *data, char *str, int i, int j)
 	new = NULL;
 	tmp = fill_tmp(&str[j], i - j);
 	if (tmp == NULL || str == NULL)
-		exit_all(data, 1, "There is a problem with the tmp when I try to add a node in the token list");
+		exit_all(data, 1, "There is a problem with malloc when I try to add a quoted node in the token list");
 	new = ft_lstnew(tmp);
 	new->type = QUOTED_PHRASE;
 	free (tmp);
 	ret = ft_lstadd_back(&data->token_list, new);
 	if (ret == 1)
-		exit_all(data, 1, "There is a problem with the tmp when I try to add a node in the end of token list");
+		exit_all(data, 1, "There is a problem with malloc when I try to add a quoted node in the end of token list");
 }
