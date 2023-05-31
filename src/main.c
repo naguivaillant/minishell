@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/27 14:10:00 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/31 16:27:49 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_all(t_data *data)
 	t_list	*tmp;
 
 	tmp = data->token_list;
-	// printf("----START ALL-----\n");
+	printf("----START ALL-----\n");
 	while (tmp != NULL)
 	{
 		printf("%s\n", tmp->content);
@@ -26,7 +26,7 @@ void	print_all(t_data *data)
 		tmp = tmp->next;
 	}
 	// printf("%d\n", tmp->printed);
-	// printf("----END ALL-----\n");
+	printf("----END ALL-----\n");
 }
 
 void	exec_cmd(t_data *data)
@@ -65,13 +65,14 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 
 	ft_bzero(&data, sizeof(data));
+	ft_bzero(&data.cmd, sizeof(data.cmd));
 	ft_bzero(&data.token_list, sizeof(data.token_list));
 	ft_bzero(&data.env, sizeof(data.env));
 	// printf("&data.env %s\n", (char *)&data.env->content);
 	if (!env || env == NULL || argc != 1)
 		exit_all(&data, 1, "There is a problem with the arguments or the environment");
 	parse_path(env, &data);
-	fill_env_list(env, &data);
+	// fill_env_list(env, &data);
 	while (1)
 	{
 		signal(SIGINT, ft_handler);
