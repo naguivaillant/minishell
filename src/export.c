@@ -6,11 +6,11 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:00:03 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/11 19:29:28 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/27 12:17:03 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 	/* --- Mark each name to be passed to child processes in the environment. The names
 refer to shell variables*/
@@ -34,8 +34,8 @@ void	ft_sort(t_list *tmp, t_list *print)
 			tmp = tmp->next;
 		}
 	}
-	printf("declare -x %s\n", (char *)print->content);
 	print->printed = 1;
+	printf("declare -x %s\n", (char *)print->content);
 }
 
 void	back_to_zero(t_data *data)
@@ -47,50 +47,67 @@ void	back_to_zero(t_data *data)
 	{
 		tmp->full = 0;
 		tmp->printed = 0;
-		tmp->type = 0;
+		// tmp->type = 0;
 		tmp = tmp->next;
 	}
 }
 
-int	add_variable(t_data *data)
+int	add_variable(t_data *data, t_list *pos)
 {
-	int		i;
-	int		y;
 	t_list	*tmp;
 	t_list	*new;
 
-	i = 0;
-	y = 0;
 	new = NULL;
-	tmp = data->cmd_list;
-	while (tmp->next != NULL)/* ------------- probleme ici, n'affiche pas la bonne commande */
+	tmp = pos;
+	if (pos->next != NULL)
 	{
-		if (tmp->next != NULL && ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
+		tmp = pos->next;
+		if (ft_strchr(tmp->content, '=') != 0)
 		{
-			tmp = tmp->next;
-			// printf("tmp next: %s\n", (char *)tmp->content);
-			if (ft_strchr(tmp->content, '=') != 0)
-			{
-				new = ft_lstnew(tmp->content);
-				// printf("new next: %s\n", (char *)new->content);
-				ft_lstadd_back(&data->env, new);
-				// print_all(data);
-				return (0);
-			}
-			else if (tmp && tmp->type != 3)/* --------- changer ici -- pour dire que si c'est une variable sans value, 
-														faut quand meme l'afficher dans export mais pas dans env*/
-			{
-				// print_all(data);
-				data->env->full = 1;
-				return (0);
-			}
+			new = ft_lstnew(tmp->content);
+			// printf("new next: %s\n", (char *)new->content);
+			ft_lstadd_back(&data->env, new);
+			// print_all(data);
+			print_env(data);
+			return (0);
 		}
-		tmp = tmp->next;
+		// else if (tmp && tmp->type != 3)/* ----- changer ici -- pour dire que si c'est une variable sans value, 
+		// 									faut quand meme l'afficher dans export mais pas dans env*/
+		// {
+		// 	// print_all(data);
+		// 	data->env->full = 1;
+		// 	return (0);
+		// }
 	}
+	// printf("tmp debut: %s\n", (char *)tmp->content);
+	// while (tmp->next != NULL)/* ------------- probleme ici, n'affiche pas la bonne commande */
+	// {
+	// 	if (tmp->next != NULL && ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
+	// 	{
+	// 		tmp = tmp->next;
+	// 		// printf("tmp next: %s\n", (char *)tmp->content);
+	// 		if (ft_strchr(tmp->content, '=') != 0)
+	// 		{
+	// 			new = ft_lstnew(tmp->content);
+	// 			printf("new next: %s\n", (char *)new->content);
+	// 			ft_lstadd_back(&data->env, new);
+	// 			// print_all(data);
+	// 			return (0);
+	// 		}
+	// 		else if (tmp && tmp->type != 3)/* ----- changer ici -- pour dire que si c'est une variable sans value, 
+	// 											faut quand meme l'afficher dans export mais pas dans env*/
+	// 		{
+	// 			// print_all(data);
+	// 			data->env->full = 1;
+	// 			return (0);
+	// 		}
+	// 	}
+	// 	tmp = tmp->next;
+	// }
 	return (1);
 }
 
-int	builtin_export(t_data *data)
+int	builtin_export(t_data *data, t_list *pos)
 {
 	t_list	*tmp;
 	t_list	*print;
@@ -103,11 +120,11 @@ int	builtin_export(t_data *data)
 	i = 0;
 	if (!data->env)
 		exit(EXIT_FAILURE);
-	print = data->env;
-	tmp = data->env;
-	count = count_list(print);
-	if (add_variable(data) == 0)
+	if (add_variable(data, pos) == 0)
 		return (0);
+	count = count_list(data->env);
+	printf("count: %d\n", count);
+	tmp = data->env;
 	while (i < count)
 	{
 		print = data->env;

@@ -6,70 +6,103 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 17:53:43 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/19 18:46:34 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:44:11 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include <stdlib.h>
-// #include <stdio.h>
-// #include <sys/types.h>
-// #include <sys/stat.h>
-// #include <fcntl.h>
-// #include <readline/readline.h>
-// #include <readline/history.h>
-// typedef struct s_list	t_list;
-// typedef struct s_data	t_data;
-// void	free_tab(char **tab);
-// void	exit_all(t_data *data, int err);
-// int		is_metacharacter(char c);
-// int		is_space(char c);
-// t_list	*ft_lstnew(void *content);
-// int	ft_lstadd_back(t_list **lst, t_list *new);
-// void	ft_bzero(void *s, size_t n);
+#include "../include/minishell.h"
 
-#include "minishell.h"
-
-char	*fill_tmp(char *str, int len)
+static void	split_meta(t_data *data, char *str, int *i, int *j)
 {
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	tmp = NULL;
-	if (len <= 0 || !str || str == NULL)
-		return (NULL);
-	tmp = malloc(sizeof(char) * (len + 1));
-	if (!tmp || tmp == NULL)
-		return (NULL);
-	while (i < len)
+	(*i)++;
+	if (str[*i] && *i + 1 < (int)ft_strlen(str) && str[*i] == str[*j])
 	{
-		tmp[i] = str[i];
-		i++;
+		while (*i + 1 < (int)ft_strlen(str) && str[*i] == str[*j])
+			(*i)++;
+		if (*i + 1 < (int)ft_strlen(str))
+			add_node(data, str, *i, *j);
+		else if (*i + 1 == (int)ft_strlen(str) && str[*i] == str[*j])
+		{
+			add_node(data, str, *i + 1, *j);
+			*j = *i + 1;
+			return ;
+		}
+		else if (*i + 1 == (int)ft_strlen(str) && str[*i] != str[*j])
+		{
+			add_node(data, str, *i, *j);
+			*j = *i;
+			return ;
+		}
 	}
-	tmp[i] = '\0';
-	return (tmp);
-}
-
-void	add_node(t_data *data, char *str, int i, int j)
-{
-	char	*tmp;
-	t_list	*new;
-	int		ret;
-
-	ret = 0;
-	new = NULL;
-	tmp = fill_tmp(&str[j], i - j);
-	if (tmp == NULL)
-		exit_all(data, 1);
-	new = ft_lstnew(tmp);
-	free (tmp);
-	ret = ft_lstadd_back(&data->token_list, new);
-	if (ret == 0)
+	else if (str[*i] && *i + 1 == (int)ft_strlen(str))
+	{
+		add_node(data, str, *i + 1, *j);
+		*j = (int)ft_strlen(str);
 		return ;
-	if (ret != 0)
-		exit_all(data, 1);
+	}
+	else
+		add_node(data, str, *i, *j);
+	while (str[*i] && is_space(str[*i]) == 1)
+		(*i)++;
+	*j = *i;
+	(*i)--;
 }
 
+static void	split_double_quotes(t_data *data, char *str, int *i, int *j)
+{
+	(*i)++;
+	if (str[*i])
+		*j = *i;
+	else
+		return ;
+	while (str[*i] && str[*i] != '\"')
+	{
+		(*i)++;
+	}
+	if (str[*i] == '\"')
+	{
+		add_node_quote(data, str, *i, *j);
+		if (str[*i])
+		{
+			(*i)++;
+			*j = *i;
+			(*i)--;
+		}
+		else
+			return ;
+	}
+	else
+		exit_all(data, 1, "There is a double quote missing");
+}
+
+static void	split_simple_quotes(t_data *data, char *str, int *i, int *j)
+{
+	(*i)++;
+	if (str[*i])
+		*j = *i;
+	else
+		return ;
+	while (str[*i] && str[*i] != '\'')
+	{
+		(*i)++;
+	}
+	if (str[*i] == '\'')
+	{
+		add_node_quote(data, str, *i, *j);
+		if (str[*i])
+		{
+			(*i)++;
+			*j = *i;
+			(*i)--;
+		}
+		else
+			return ;
+	}
+	else
+		exit_all(data, 1, "There is a simple quote missing");
+}
+
+/* A NORMER */
 void	split_in_list(t_data *data, char *str)
 {
 	int		i;
@@ -79,20 +112,58 @@ void	split_in_list(t_data *data, char *str)
 	j = 0;
 	while (str[i])
 	{	
-		if (j != i && (is_metacharacter(str[i]) == 1 || is_space(str[i]) == 1 || str[i] == '\"' || str[i] == '\0'))
+		if (str[i] && j != i && (is_metacharacter(str[i]) == 1 
+			|| is_space(str[i]) == 1 || str[i] == '\"' || str[i] == '\''))
 		{
 			add_node(data, str, i, j);
 			while (str[i] && is_space(str[i]) == 1)
 				i++;
 			j = i;
 		}
-		if (j == i && is_space(str[i]) == 1)
+		if (str[i] && j == i && is_space(str[i]) == 1)
 		{
 			while (str[i] && is_space(str[i]) == 1)
 				i++;
 			j = i;
 		}
-		if (i == j && is_metacharacter(str[i]) == 1)
+		if (str[i] && i == j && is_metacharacter(str[i]) == 1)
+			split_meta(data, str, &i, &j);
+		if (str[i] && i == j && str[i] == '\"')
+			split_double_quotes(data, str, &i, &j);
+		if (str[i] && i == j && str[i] == '\'')
+			split_simple_quotes(data, str, &i, &j);
+		i++;
+	}
+	if (j != i && is_space(str[j]) == 0)
+		add_node(data, str, i, j);
+}
+
+/* CA MARCHE mais va falloir normer  :// */
+/*
+void	split_in_list(t_data *data, char *str)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	str = ft_strtrim(str, " ");
+	while (str[i])
+	{	
+		if (j != i && (is_metacharacter(str[i]) == 1 || is_space(str[i]) == 1 || str[i] == '\"'))
+		{
+			add_node(data, str, i, j);
+			while (str[i] && is_space(str[i]) == 1)
+				i++;
+			j = i;
+		}
+		if (str[i] && j == i && is_space(str[i]) == 1)
+		{
+			while (str[i] && is_space(str[i]) == 1)
+				i++;
+			j = i;
+		}
+		if (str[i] && i == j && is_metacharacter(str[i]) == 1)
 		{
 			i++;
 			if (str[i] && str[i] == str[j])
@@ -141,6 +212,8 @@ void	split_in_list(t_data *data, char *str)
 		}
 		i++;
 	}
-	if (j != i && str[i] == '\0')
+	if (j != i && is_space(str[j]) == 0 && str[i])
 		add_node(data, str, i, j);
+	free (str);
 }
+*/
