@@ -5,54 +5,60 @@
 #                                                     +:+ +:+         +:+      #
 #    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/05/02 13:38:25 by mrabourd          #+#    #+#              #
-#    Updated: 2023/05/10 16:01:48 by mrabourd         ###   ########.fr        #
+#    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
+#    Updated: 2023/06/01 15:30:30 by mrabourd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = minishell
+SRC_DIR		=	src/
+OBJ_DIR		=	obj/
+DIR_LIB		=	./libft
+NAMELFT		=	./libft/libft.a
+NAME		=	minishell
+INCLUDE		=	-I./include -I./libft/include
+CC			=	cc
+CFLAGS		=	-Wall -Werror -Wextra
+Make		=	Make
 
-CC = cc
+FILES = 	main					\
+			path					\
+			parsing_cmd				\
+			split_list				\
+			split_list_utils		\
+			assign_type				\
+			env 					\
+			export					\
+			unset					\
+			exit
+			# eccho					\
 
-CFLAGS = -Wall -Werror -Wextra
+SRC = $(addprefix $(SRC_DIR), $(addsuffix .c, $(FILES)))
+OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(FILES)))
 
-SRC = 	main.c					\
-		path.c					\
-		env.c					\
-		export.c				\
-		eccho.c					\
-		exit.c
+OBJF = .cache_exists
 
-SRC_ALL = ${addprefix ${SRC_DIR},${SRC}}
+$(OBJF):
+	@mkdir -p $(OBJ_DIR)
 
-SRC_DIR = src/
+all: make_lib $(NAME)
 
-OBJ_DIR = obj/
+make_lib : 
+	@make -C $(DIR_LIB)
 
-LIBFT_DIR = libft
+$(OBJ_DIR)%.o	: $(SRC_DIR)%.c | $(OBJF)
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
-OBJ_ALL = ${SRC_ALL:.c=.o}
+$(NAME)    :    $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -lreadline libft/libft.a -o $(NAME)
 
-OBJ = ${subst ${SRC_DIR}, ${OBJ_DIR}, ${OBJ_ALL}}
+clean    :
+	@rm -rf $(OBJ_DIR)
+	@rm -f $(OBJF)
+	@cd $(DIR_LIB) && $(MAKE) clean
 
-all : make_lib ${NAME}
+fclean    :    clean
+	@rm -f $(NAME)
 
-make_lib :
-	@make -C ${LIBFT_DIR}
+re        :    fclean all
 
-${NAME} : ${OBJ}
-	${CC} ${OBJ} -lreadline ${CFLAGS} libft/libft.a -o ${NAME}
-
-${OBJ_DIR}%.o : ${SRC_DIR}%.c
-	${CC} ${CFLAGS} -I/usr/include -c $< -o $@
-
-clean :
-	rm -f ${OBJ}
-
-fclean : clean
-	make -C ${LIBFT_DIR} fclean
-	rm -f ${NAME}
-
-re : fclean all
-
-.PHONY : all clean fclean re
+.PHONY    :    all clean fclean re
