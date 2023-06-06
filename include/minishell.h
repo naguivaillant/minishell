@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 13:29:02 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/16 13:34:20 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/06 03:15:24 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ typedef struct s_path
 typedef struct	s_exec
 {
 	char		**cmd;
-	char		**infile;
-	char		**outfile;
+	// char		**infile;
+	// char		**outfile;
 	int			fdin;
 	int			fdout;
 	int			redirect_input;
@@ -59,6 +59,13 @@ void	print_all(t_data *data);
 /* PARSE COMMANDES */
 void	assign_type(t_data *data);
 void	parse_cmd(t_data *data);
+int	is_redirection(t_list *tmp);
+
+/* COUNT */
+int	count_cmd(t_list *tmp);
+void	count_pipes(t_data *data);
+void    count_redirections(t_list *tmp, t_exec *current, int x);
+void    init_exec(t_exec *current, int x);
 
 /* SPLIT LIST */
 int		is_metacharacter(char c);
@@ -70,7 +77,7 @@ void	add_node_single_quote(t_data *data, char *str, int i, int j);
 void	split_in_list(t_data *data, char *str);
 
 /* PATH */
-void	parse_path(char **env, t_data *data);
+void	parse_path(t_data *data);
 
 /* ENV */
 void	fill_env_list(char **env, t_data *data);

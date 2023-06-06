@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:33:03 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/16 18:01:48 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/06 02:34:41 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	clear_cmd(t_data *data)
 	int		i;
 
 	i = 0;
-	printf("pipes: %d\n", data->pipes);
 	if (data->token_list && data->token_list != NULL)
 		ft_lstclear(&data->token_list, del);
 	if (data->pipes > 0)
@@ -43,12 +42,12 @@ void	clear_cmd(t_data *data)
 			// 	free_tab(data->exec[i].infile);
 			// if (data->exec[i].outfile && data->exec[i].outfile != NULL)
 			// 	free_tab(data->exec[i].outfile);
-			// data->exec[i].fdin = 0;
-			// data->exec[i].fdout = 0;
-			// data->exec[i].redirect_input = 0;
-			// data->exec[i].redirect_output = 0;
-			// data->exec[i].heredoc = 0;
-			// data->exec[i].delimiter_append = 0;
+			data->exec[i].fdin = 0;
+			data->exec[i].fdout = 1;
+			data->exec[i].redirect_input = 0;
+			data->exec[i].redirect_output = 0;
+			data->exec[i].heredoc = 0;
+			data->exec[i].delimiter_append = 0;
 			i++;
 		}
 	}

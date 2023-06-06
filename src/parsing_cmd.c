@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 14:32:12 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/16 18:08:42 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/06 03:39:31 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	print_tab(t_data *data)
 		while (data->exec[nb_cmd].cmd[i])
 		{
 			printf("data->exec[%d].cmd[%d]: %s\n", nb_cmd, i, data->exec[nb_cmd].cmd[i]);
+			printf("nb de redirect input: %d\n", data->exec[nb_cmd].redirect_input);
 			i++;
 		}
 		nb_cmd++;
@@ -57,89 +58,69 @@ void	put_redir_input_in_tab(t_data *data)
 	}
 }
 */
-int	count_cmd(t_list *tmp)
-{
-	int		i;
 
-	i = 0;
-	while (tmp != NULL)
+int	is_redirection(t_list *tmp)
+{
+	if (tmp->type == INFILE || tmp->type == OUTFILE
+		|| tmp->type == REDIRECT_INPUT || tmp->type == REDIRECT_OUTPUT
+		|| tmp->type == HEREDOC || tmp->type == ENDOFFILE)
+		return (1);
+	return (0);
+}
+
+void	fill_exec(t_data *data, t_list **tmp, t_exec *current, int x)
+{
+	int	job;
+	int	y;
+	t_list	*count;
+	int	flag;
+
+	y = 0;
+	flag = 0;
+	count = *tmp;
+	job = count_cmd(count);
+	init_exec(current, x);
+	current[x].cmd = malloc(sizeof(char *) * (job + 1));
+	if (current[x].cmd == NULL)
+		exit_all(data, 1, "malloc probleme pour structure");
+	while (y < job)
 	{
-		if (tmp->type != INFILE && tmp->type != OUTFILE
-			&& tmp->type != REDIRECT_INPUT && tmp->type != REDIRECT_OUTPUT
-			&& tmp->type != HEREDOC && tmp->type != ENDOFFILE
-			&& tmp->type != PIPE)
-			i++;
-		if (tmp->type == PIPE)
+		count_redirections(*tmp, current, x);
+		if ((*tmp)->next != NULL && is_redirection(*tmp) == 1)
 		{
-			printf("ipipe: %d\n", i);
-			return (i);
+			*tmp = (*tmp)->next;
+			flag = 1;
 		}
-		tmp = tmp->next;
+		else
+		{
+			current[x].cmd[y] = ft_strdup((*tmp)->content);
+			printf("dup: %s\n", current[x].cmd[y]);
+			y++;
+		}
+		if ((*tmp)->next != NULL && flag == 0)
+			*tmp = (*tmp)->next;
+		flag = 0;
 	}
-	printf("i: %d\n", i);
-	return (i);
+	if ((*tmp)->next != NULL && (*tmp)->type == PIPE)
+		*tmp = (*tmp)->next;
+	current[x].cmd[y] = NULL;
 }
 
 void	put_cmd_in_tab(t_data *data, int nb)
 {
 	t_list	*tmp;
 	int		x;
-	int		y;
-	int		job;
 
 	x = 0;
-	y = 0;
-	job = 0;
 	tmp = data->token_list;
-	data->exec = malloc(sizeof(data->exec) * nb);
+	data->exec = malloc(sizeof(t_exec) * nb);
 	if (data->exec == NULL)
 		exit_all(data, 1, "malloc probleme pour structure");
 	while (x < nb)
 	{
-		job = count_cmd(tmp);
-		data->exec[x].cmd = malloc(sizeof(char *) * job);
-		if (data->exec[x].cmd == NULL)
-			exit_all(data, 1, "malloc probleme pour structure");
-		y = 0;
-		while (y < job)
-		{
-			// printf("tmp->content: %s\n", tmp->content);
-			if (tmp->type != INFILE && tmp->type != OUTFILE
-				&& tmp->type != REDIRECT_INPUT && tmp->type != REDIRECT_OUTPUT
-				&& tmp->type != HEREDOC && tmp->type != ENDOFFILE
-				&& tmp->type != PIPE)
-			{
-				data->exec[x].cmd[y] = ft_strdup(tmp->content);
-				y++;
-			}
-			// printf("ok\n");
-			if (tmp->next != NULL)
-				tmp = tmp->next;
-			else
-				break ;
-		}
-		if (tmp->next != NULL && tmp->type == PIPE)
-		{
-			tmp = tmp->next;
-			// printf("apres pipe: %s\n", tmp->content);
-		}
+		fill_exec(data, &tmp, data->exec, x);
 		x++;
 	}
-}
-
-void	count_pipes(t_data *data)
-{
-	t_list	*tmp;
-
-	tmp = data->token_list;
-	data->pipes = 0;
-	while (tmp != NULL)
-	{
-		if (tmp->type == PIPE)
-			data->pipes++;
-		tmp = tmp->next;
-	}
-	data->pipes++;
 }
 
 void	parse_cmd(t_data *data)
@@ -153,13 +134,7 @@ void	parse_cmd(t_data *data)
 	assign_type(data);
 	print_all(data);
 	count_pipes(data);
-	printf("pipes %d\n", data->pipes);
 	put_cmd_in_tab(data, data->pipes);
-	// while (nb_cmd < data->pipes)
-	// {
-	// 	put_cmd_in_tab(data, nb_cmd);
-	// 	nb_cmd++;
-	// }
 	// put_redir_input_in_tab(data);
 	// put_redir_output_in_tab(data);
 	print_tab(data);

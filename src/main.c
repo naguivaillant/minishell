@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/16 17:58:12 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/06 00:07:54 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ int	main(int argc, char **argv, char **env)
 	ft_bzero(&data, sizeof(data));
 	if (!env || env == NULL || argc != 1)
 		exit_all(&data, 1, "There is a problem with the arguments or the environment");
-	parse_path(env, &data);
 	fill_env_list(env, &data);
+	parse_path(&data);
 	while (1)
 	{
 		signal(SIGINT, ft_handler);

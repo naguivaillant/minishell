@@ -6,7 +6,7 @@
 #    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
-#    Updated: 2023/05/27 13:38:58 by mrabourd         ###   ########.fr        #
+#    Updated: 2023/06/06 02:04:53 by mrabourd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ FILES = 	main					\
 			split_list				\
 			split_list_utils		\
 			assign_type				\
+			count					\
 			env 					\
 			export					\
 			eccho					\
