@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:01:01 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/27 13:31:41 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/01 17:13:52 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void	fill_env_list(char **env, t_data *data)
 	i = 0;
 	res = 0;
 	new = NULL;
-	if (env && (char *)&data->env->content == NULL)
+	// ft_bzero(new, sizeof(new));
+	if (env)
 	{
 		while (env[i])
 		{
@@ -61,7 +62,7 @@ void	print_env(t_data *data)
 	while (tmp)
 	{
 		if (tmp->full == 0)
-			printf("%s\n", (char *)tmp->content);
+			printf("%s\n", tmp->content);
 		tmp = tmp->next;
 	}
 }
