@@ -6,19 +6,19 @@ void	child_process(t_exec *exec, t_list *env, int i)
 
 	exec->index = i;
 	free(exec->pid);
-	cmd = start_cmd_tab(exec, env, exec->av[i], 2);
+/*	cmd = start_cmd_tab(exec, env, exec->av[i], 2);
 	if (!cmd)
 	{
 		if (exec->here)
 			free(exec->here);
 		free_exec_env(env, exec, NULL, 1);
 		exit(0);
-	}
+	}*/
 	if (builtins_finder(cmd))
 		exec_builtins(cmd, exec, env, 1);
 	if (cmd[0])
 		exec->cmd_state = cmd_final_state(exec, cmd[0]);
-	if (exec->cmd && !isntempty(cmd))
+	if (exec->cmd /*&& !isntempty(cmd)*/)
 		safe_exe(exec, cmd, exec->env);
 	child_aux(env, exec, cmd);
 	exit(127);

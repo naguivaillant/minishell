@@ -47,7 +47,11 @@ typedef struct	s_exec
 	char		*outfile;
 	int			fdin;
 	int			fdout;
+	int			here_nb;
+	int			*pipefd;
+	int			prev_pipe;
 	char		*strerror;
+	char		**av;
 	int			err;
 	int			*pid;
 	int			index;
