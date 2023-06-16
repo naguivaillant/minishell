@@ -6,7 +6,7 @@
 #    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
-#    Updated: 2023/06/01 15:30:30 by mrabourd         ###   ########.fr        #
+#    Updated: 2023/06/16 13:29:19 by nagvaill         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,9 @@ FILES = 	main					\
 			pipex_utils				\
 			pipex_direction				\
 			execution				\
+			safe_zone				\
 			exec_builtins				\
+			aux					\
 			# eccho					\
 
 SRC = $(addprefix $(SRC_DIR), $(addsuffix .c, $(FILES)))

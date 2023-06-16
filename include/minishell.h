@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 13:29:02 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/12 16:02:56 by marvin           ###   ########.fr       */
+/*   Updated: 2023/06/16 13:38:47 by nagvaill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,13 @@ int	isaredirection(char *str);
 void	redir_finder(t_exec *exec, t_list *env, char **cmd, int toggle);
 int	builtins_finder(char **cmd);
 void	exec_builtins(char **cmd, t_exec *exec, t_list *env, int toggle);
+int	safe_piping(int	*pipefd);
+void	safe_exe(t_exec *exec, char **cmd, char **env);
+void	safe_close(int fd);
+void	safe_dup(int oldfd, int newfd);
+void    child_aux(t_list *env, t_exec *exec, char **cmd);
+int     pipex_aux(t_data *data, char *read);
+int     pipex_hd_aux(t_list *env, t_data *data);
 
 /* EXIT */
 void	clear_cmd(t_data *data);

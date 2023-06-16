@@ -62,8 +62,8 @@ int	pipex_heart(t_list *env, t_data *data)
 			return (-1);
 		if (is_a_built_na(env, data, i))
 			waitpid(data->pid[i], &data->status, 0);
-		if (data->here_nb && ft_strstr(data->av[i], "<<"))
-			data->here_cmp++;
+		// if (data->here_nb && ft_strstr(data->av[i], "<<"))
+		// 	data->here_cmp++;
 		i++;
 	}
 	return (0);

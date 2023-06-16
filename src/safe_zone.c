@@ -1,34 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_direction.c                                  :+:      :+:    :+:   */
+/*   safe_zone.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nagvaill <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/16 13:16:55 by nagvaill          #+#    #+#             */
-/*   Updated: 2023/06/16 13:16:56 by nagvaill         ###   ########.fr       */
+/*   Created: 2023/06/16 13:20:31 by nagvaill          #+#    #+#             */
+/*   Updated: 2023/06/16 13:21:18 by nagvaill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	heredoc_count(char **tab)
+int	safe_piping(int *pipefd)
 {
-	int	i;
-	int	count;
-
-	i = -1;
-	count = 0;
-	while (tab[++i])
+	if (pipe(pipefd) == -1)
 	{
-		if (tab[i][0] == '<' && tab[i][1] == '<')
-			count++;
+		perror("pipefd");
+		return (-1);
 	}
-	return (count);
+	return (0);
 }
 
-void	dup_n_close(int oldfd, int newfd)
+void	safe_exe(t_data *data, char **cmd, char **env)
 {
-	safe_dup(oldfd, newfd); //a faire
-	safe_close(oldfd); // a faire
+	if (execve(data->cmd, cmd, env) == -1)
+	{
+		perror("exceve");
+		exit(errno);
+	}
+}
+
+void	safe_close(int fd)
+{
+	if (close(fd) == -1)
+	{
+		perror("close");
+		exit(errno);
+	}
+}
+
+void	safe_dup(int oldfd, int newfd)
+{
+	if (dup2(oldfd, newfd) == -1)
+	{
+		perror("dup2");
+		exit(errno);
+	}
 }
