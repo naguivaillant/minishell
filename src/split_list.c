@@ -61,7 +61,7 @@ static void	split_double_quotes(t_data *data, char *str, int *i, int *j)
 	}
 	if (str[*i] == '\"')
 	{
-		add_node_quote(data, str, *i, *j);
+		add_node_double_quote(data, str, *i, *j);
 		if (str[*i])
 		{
 			(*i)++;
@@ -75,7 +75,7 @@ static void	split_double_quotes(t_data *data, char *str, int *i, int *j)
 		exit_all(data, 1, "There is a double quote missing");
 }
 
-static void	split_simple_quotes(t_data *data, char *str, int *i, int *j)
+static void	split_single_quotes(t_data *data, char *str, int *i, int *j)
 {
 	(*i)++;
 	if (str[*i])
@@ -88,7 +88,7 @@ static void	split_simple_quotes(t_data *data, char *str, int *i, int *j)
 	}
 	if (str[*i] == '\'')
 	{
-		add_node_quote(data, str, *i, *j);
+		add_node_single_quote(data, str, *i, *j);
 		if (str[*i])
 		{
 			(*i)++;
@@ -99,7 +99,7 @@ static void	split_simple_quotes(t_data *data, char *str, int *i, int *j)
 			return ;
 	}
 	else
-		exit_all(data, 1, "There is a simple quote missing");
+		exit_all(data, 1, "There is a single quote missing");
 }
 
 /* A NORMER */
@@ -112,7 +112,7 @@ void	split_in_list(t_data *data, char *str)
 	j = 0;
 	while (str[i])
 	{	
-		if (str[i] && j != i && (is_metacharacter(str[i]) == 1 
+		if (str[i] && j != i && (is_metacharacter(str[i]) == 1
 			|| is_space(str[i]) == 1 || str[i] == '\"' || str[i] == '\''))
 		{
 			add_node(data, str, i, j);
@@ -131,7 +131,7 @@ void	split_in_list(t_data *data, char *str)
 		if (str[i] && i == j && str[i] == '\"')
 			split_double_quotes(data, str, &i, &j);
 		if (str[i] && i == j && str[i] == '\'')
-			split_simple_quotes(data, str, &i, &j);
+			split_single_quotes(data, str, &i, &j);
 		i++;
 	}
 	if (j != i && is_space(str[j]) == 0)
