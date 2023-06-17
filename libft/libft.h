@@ -19,7 +19,7 @@
 
 typedef enum	e_type
 {
-	SIMPLE_QUOTE,
+	SINGLE_QUOTE,
 	DOUBLE_QUOTE,
 	PIPE,
 	COMMANDE,
@@ -36,6 +36,15 @@ typedef enum	e_type
 	SEMICOLON,
 	PARENTHESIS,
 	BLANCK,
+	HEREDOC,
+	ENDOFFILE,
+	VARIABLE_NAME,
+	VARIABLE_VALUE,
+	EXIT_STATUS,
+	ENVIRONMENT_VARIABLE,
+	NUMBER,
+	ARITHMETIC_APPEND,
+
 }				t_type;
 
 typedef struct s_list
