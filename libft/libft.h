@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 15:20:31 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/01 15:20:16 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/05/22 18:03:10 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,35 +19,41 @@
 
 typedef enum	e_type
 {
-	UNDEFINED,
-	QUOTED_PHRASE,	/* faire la diff entre simple et double pour le dollar */
+	SINGLE_QUOTE,
+	DOUBLE_QUOTE,
 	PIPE,
-	COMMANDE, /* ou ARGUMENT ?? */
+	COMMANDE,
 	OPTION,
-	NUMBER,
 	INFILE,
 	OUTFILE,
 	REDIRECT_INPUT,
 	REDIRECT_OUTPUT,
-	HEREDOC,
+	DELIMITER_INPUT,
 	DELIMITER_APPEND,
-	ENDOFFILE,
-	EXIT_STATUS,				/* --> $? 			*/
-	ENVIRONMENT_VARIABLE,		/* --> $VARIABLE	*/
+	DOLLAR,
 	EPERLUETTE,
 	WORD,
 	SEMICOLON,
 	PARENTHESIS,
 	BLANCK,
+	HEREDOC,
+	ENDOFFILE,
+	VARIABLE_NAME,
+	VARIABLE_VALUE,
+	EXIT_STATUS,
+	ENVIRONMENT_VARIABLE,
+	NUMBER,
+	ARITHMETIC_APPEND,
+
 }				t_type;
 
 typedef struct s_list
 {
 	char			*content;
 	struct s_list	*next;
-	int				full;		/*si valeur remplie = 0, sinon = 1, pour export/env*/
-	int				printed;	/*si deja imprime, pour export 'sort' */
-	t_type			type;
+	int				full;/*si valeur remplie = 0, sinon = 1, pour export/env*/
+	int				printed;/*si deja imprime, pour export 'sort' */
+	t_type			type;/* dans minishell.h */
 }	t_list;
 
 void	del(void *content);

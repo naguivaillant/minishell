@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 14:32:12 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/01 16:43:04 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/16 18:08:42 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,113 +15,116 @@
 void	print_tab(t_data *data)
 {
 	int	i;
+	int	nb_cmd;
 
+	nb_cmd = 0;
 	i = 0;
-	while (data->exec.cmd[i])
+	while (nb_cmd < data->pipes)
 	{
-		printf("cmd tab: %s\n", data->exec.cmd[i]);
-		i++;
+		i = 0;
+		while (data->exec[nb_cmd].cmd[i])
+		{
+			printf("data->exec[%d].cmd[%d]: %s\n", nb_cmd, i, data->exec[nb_cmd].cmd[i]);
+			i++;
+		}
+		nb_cmd++;
 	}
 }
-
-// void	put_redir_output_in_tab(t_data *data)
-// {
-// 	t_list	*tmp;
-// 	int		y;
-
-// 	tmp = data->token_list;
-// 	while (tmp != NULL)
-// 	{
-// 		y = 0;
-// 		if (tmp->type == REDIRECT_OUTPUT)
-// 		{
-// 			data->redirections[1][y] = *tmp->content;
-// 			y++;
-// 			tmp = tmp->next;
-// 		}
-// 		if (tmp->type == OUTFILE)
-// 		{
-// 			data->redirections[1][y] = *tmp->content;
-// 			y++;
-// 			tmp = tmp->next;
-// 		}
-// 		tmp = tmp->next;
-// 	}
-// 	data->redirections[1][y] = '\0';
-// }
-
-// void	put_redir_input_in_tab(t_data *data)
-// {
-// 	t_list	*tmp;
-// 	int		y;
-
-// 	tmp = data->token_list;
-// 	while (tmp != NULL)
-// 	{
-// 		y = 0;
-// 		if (tmp->type == REDIRECT_INPUT)
-// 		{
-// 			data->redirections[0][y] = *tmp->content;
-// 			y++;
-// 			tmp = tmp->next;
-// 		}
-// 		if (tmp->type == INFILE)
-// 		{
-// 			data->redirections[0][y] = *tmp->content;
-// 			y++;
-// 			tmp = tmp->next;
-// 		}
-// 		tmp = tmp->next;
-// 	}
-// 	data->redirections[0][y] = '\0';
-// }
-
-int		count_cmd(t_data *data)
+/*
+void	put_redir_output_in_tab(t_data *data)
 {
-	int		i;
 	t_list	*tmp;
-	
-	i = 0;
+
 	tmp = data->token_list;
 	while (tmp != NULL)
 	{
-		if (tmp->type != INFILE && tmp->type != OUTFILE
-			&& tmp->type != REDIRECT_INPUT && tmp->type != REDIRECT_OUTPUT
-			&& tmp->type != OUTFILE && tmp->type != HEREDOC 
-			&& tmp->type != ENDOFFILE)
-			i++;
+		if (tmp->type == OUTFILE)
+			data->exec.outfile = ft_strdup(tmp->content);
 		tmp = tmp->next;
 	}
-	return (i);
 }
 
-void	put_cmd_in_tab(t_data *data)
+void	put_redir_input_in_tab(t_data *data)
 {
 	t_list	*tmp;
+
+	tmp = data->token_list;
+	while (tmp != NULL)
+	{
+		if (tmp->type == INFILE)
+			data->exec.infile = ft_strdup(tmp->content);
+		tmp = tmp->next;
+	}
+}
+*/
+int	count_cmd(t_list *tmp)
+{
 	int		i;
-	int		tab;
 
 	i = 0;
-	tmp = data->token_list;
-	tab = count_cmd(data);
-	if (tab < 1)
-		exit_all(data, 1, "There is no command");
-	data->exec.cmd = malloc(sizeof(char *) * (tab + 1));
-	if (data->exec.cmd == NULL || !data->exec.cmd)
-		exit_all(data, 1, "probleme de malloc sur la tab de cmd");
 	while (tmp != NULL)
 	{
 		if (tmp->type != INFILE && tmp->type != OUTFILE
 			&& tmp->type != REDIRECT_INPUT && tmp->type != REDIRECT_OUTPUT
-			&& tmp->type != OUTFILE && tmp->type != HEREDOC 
-			&& tmp->type != ENDOFFILE && i <= tab)
-		{
-			data->exec.cmd[i] = ft_strdup(tmp->content);
+			&& tmp->type != HEREDOC && tmp->type != ENDOFFILE
+			&& tmp->type != PIPE)
 			i++;
+		if (tmp->type == PIPE)
+		{
+			printf("ipipe: %d\n", i);
+			return (i);
 		}
 		tmp = tmp->next;
 	}
-	data->exec.cmd[i] = NULL;
+	printf("i: %d\n", i);
+	return (i);
+}
+
+void	put_cmd_in_tab(t_data *data, int nb)
+{
+	t_list	*tmp;
+	int		x;
+	int		y;
+	int		job;
+
+	x = 0;
+	y = 0;
+	job = 0;
+	tmp = data->token_list;
+	data->exec = malloc(sizeof(data->exec) * nb);
+	if (data->exec == NULL)
+		exit_all(data, 1, "malloc probleme pour structure");
+	while (x < nb)
+	{
+		job = count_cmd(tmp);
+		data->exec[x].cmd = malloc(sizeof(char *) * job);
+		if (data->exec[x].cmd == NULL)
+			exit_all(data, 1, "malloc probleme pour structure");
+		y = 0;
+		while (y < job)
+		{
+			// printf("tmp->content: %s\n", tmp->content);
+			if (tmp->type != INFILE && tmp->type != OUTFILE
+				&& tmp->type != REDIRECT_INPUT && tmp->type != REDIRECT_OUTPUT
+				&& tmp->type != HEREDOC && tmp->type != ENDOFFILE
+				&& tmp->type != PIPE)
+			{
+				data->exec[x].cmd[y] = ft_strdup(tmp->content);
+				y++;
+			}
+			// printf("ok\n");
+			if (tmp->next != NULL)
+				tmp = tmp->next;
+			else
+				break ;
+		}
+		if (tmp->next != NULL && tmp->type == PIPE)
+		{
+			tmp = tmp->next;
+			// printf("apres pipe: %s\n", tmp->content);
+		}
+		x++;
+	}
 }
 
 void	count_pipes(t_data *data)
@@ -129,12 +132,14 @@ void	count_pipes(t_data *data)
 	t_list	*tmp;
 
 	tmp = data->token_list;
+	data->pipes = 0;
 	while (tmp != NULL)
 	{
 		if (tmp->type == PIPE)
-			data->exec.pipes++;
+			data->pipes++;
 		tmp = tmp->next;
 	}
+	data->pipes++;
 }
 
 void	parse_cmd(t_data *data)
@@ -148,9 +153,14 @@ void	parse_cmd(t_data *data)
 	assign_type(data);
 	print_all(data);
 	count_pipes(data);
-	printf("pipes %d\n", data->exec.pipes);
+	printf("pipes %d\n", data->pipes);
+	put_cmd_in_tab(data, data->pipes);
+	// while (nb_cmd < data->pipes)
+	// {
+	// 	put_cmd_in_tab(data, nb_cmd);
+	// 	nb_cmd++;
+	// }
 	// put_redir_input_in_tab(data);
 	// put_redir_output_in_tab(data);
-	put_cmd_in_tab(data);
 	print_tab(data);
 }

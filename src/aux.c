@@ -12,47 +12,46 @@
 
 #include "minishell.h"
 
-void	child_aux(t_list *env, t_exec *exec, char **cmd)
+void	child_aux(t_exec *exec, char **cmd)
 {
 	ft_putstr_fd(cmd[0], STDERR_FILENO);
 	ft_putstr_fd(": command not found\n", STDERR_FILENO);
-	free(data->cmd);
-	free_data_env(env, data, cmd, 2);
+	free(exec->cmd);
 }
 
-int	pipex_aux(t_data *data, char *read)
+int	pipex_aux(t_exec *exec)
 {
-	if (!data->pid || !data->av)
+	if (!exec->pid || !exec->cmd)
 	{
-		if (data->av)
+		if (exec->cmd)
 		{
-			free_tab(data->av);
-			if (data->pid)
-				free(data->pid);
+			free_tab(exec->cmd);
+//			if (exec->pid)
+//				free(exec->pid);
 		}
-		free(data->env);
 		return (1);
 	}
 	return (0);
 }
 
-int	pipex_hd_aux(t_list *env, t_data *data)
+int	pipex_hd_aux(t_exec *exec)
 {
 	int	i;
 
-	if (data->here_nb)
-	{
-		if (here_doc(env, data) || data->status == 130)
-		{
-			i = -1;
-			while (++i < data->here_nb)
-				safe_close(data->here[i].pipe[0]);
-			free(data->here);
-			free_tab(data->av);
-			free(data->env);
-			free(data->pid);
-			return (1);
-		}
-	}
-	return (0);
+	i = exec->status;
+//	if (exec->here_nb)
+//	{
+//		if (here_doc(exec) || exec->status == 130)
+//		{
+//			i = -1;
+//			while (++i < exec->here_nb)
+//				safe_close(exec->here[i].pipe[0]);
+//			free(exec->here);
+//			free_tab(exec->cmd);
+//			free(data->env);
+//			free(exec->pid);
+//			return (1);
+//		}
+//	}
+	return (i);
 }

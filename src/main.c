@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/01 17:06:24 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/16 17:58:12 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,14 @@ void	exec_cmd(t_data *data)
 	tmp = data->token_list;
 	while (tmp != NULL)
 	{
-		// if (ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
-		// 	builtin_export(data, tmp);
+		if (ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
+			builtin_export(data, tmp);
 		if (ft_strncmp(tmp->content, "env", ft_strlen(tmp->content)) == 0)
 			print_env(data);
 		// if (ft_strncmp(tmp->content, "echo", ft_strlen(tmp->content)) == 0)
 		// 	mini_echo(data);
 		if (ft_strncmp(tmp->content, "unset", ft_strlen(tmp->content)) == 0)
-			builtin_unset(data);
+			builtin_unset(data, tmp);
 		tmp = tmp->next;
 	}
 }

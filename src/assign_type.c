@@ -94,6 +94,26 @@ void	check_quoted_phrase(t_list *tmp)
 	tmp->type = COMMANDE; /* rechecker ce que ca peut etre */
 }
 
+void	type_arithmetic(t_list *tmp)
+{
+	int	i;
+
+	i = 1;
+	while (tmp->content[i])
+	{
+		if (tmp->content[i] == '+')
+		{
+			i++;
+			if (tmp->content[i] == '=')
+			{
+				tmp->type = ARITHMETIC_APPEND;
+				return ;
+			}
+		}
+		i++;
+	}
+}
+
 void	assign_type(t_data *data)/* gerer rapidement les $variable <-- important */
 {
 	t_list	*tmp;
@@ -111,8 +131,10 @@ void	assign_type(t_data *data)/* gerer rapidement les $variable <-- important */
 			type_dollar(tmp);
 		if (tmp->content[0] == '-')
 			type_option(tmp);
-		if (tmp->type == QUOTED_PHRASE) /* pas forcement la meilleure facon de faire, a voir */
+		if (tmp->type == SINGLE_QUOTE || tmp->type == DOUBLE_QUOTE) /* pas forcement la meilleure facon de faire, a voir */
 			check_quoted_phrase(tmp);
+		if (ft_strlen(tmp->content) > 1 && tmp->type == 0)
+			type_arithmetic(tmp);
 		tmp = tmp->next;
 	}
 }

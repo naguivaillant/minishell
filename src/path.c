@@ -6,13 +6,13 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:05:25 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/24 16:26:21 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/16 13:59:57 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	parse_path(char **env, t_data *data)
+void	parse_path(char **env, t_data *data)/* a changer, checker dans data->env plutot */
 {
 	int	i;
 

@@ -6,7 +6,7 @@
 #    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
-#    Updated: 2023/06/16 13:29:19 by nagvaill         ###   ########.fr        #
+#    Updated: 2023/05/27 13:38:58 by mrabourd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,16 +28,17 @@ FILES = 	main					\
 			assign_type				\
 			env 					\
 			export					\
+			eccho					\
 			unset					\
 			exit					\
-			pipex					\
-			pipex_utils				\
-			pipex_direction				\
-			execution				\
-			safe_zone				\
-			exec_builtins				\
 			aux					\
-			# eccho					\
+			check_is_builtin			\
+			exec_builtins				\
+			execution				\
+			pipex					\
+			pipex_direction				\
+			pipex_utils				\
+			safe_zone				\
 
 SRC = $(addprefix $(SRC_DIR), $(addsuffix .c, $(FILES)))
 OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(FILES)))
@@ -56,7 +57,7 @@ $(OBJ_DIR)%.o	: $(SRC_DIR)%.c | $(OBJF)
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 $(NAME)    :    $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -lreadline libft/libft.a -o
+	$(CC) $(CFLAGS) $(OBJ) -lreadline libft/libft.a -o $(NAME)
 
 clean    :
 	@rm -rf $(OBJ_DIR)
