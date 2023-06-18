@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 14:32:12 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/06 03:39:31 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/18 17:47:56 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,49 +15,41 @@
 void	print_tab(t_data *data)
 {
 	int	i;
-	int	nb_cmd;
+	int	nb_jobs;
+	int	infile;
+	int	outfile;
 
-	nb_cmd = 0;
+	outfile = 0;
+	infile = 0;
+	nb_jobs = 0;
 	i = 0;
-	while (nb_cmd < data->pipes)
+	while (nb_jobs < data->pipes)
 	{
 		i = 0;
-		while (data->exec[nb_cmd].cmd[i])
+		while (data->exec[nb_jobs].cmd[i])
 		{
-			printf("data->exec[%d].cmd[%d]: %s\n", nb_cmd, i, data->exec[nb_cmd].cmd[i]);
-			printf("nb de redirect input: %d\n", data->exec[nb_cmd].redirect_input);
+			printf("data->exec[%d].cmd[%d]: %s\n", nb_jobs, i, data->exec[nb_jobs].cmd[i]);
 			i++;
 		}
-		nb_cmd++;
+		if (data->exec[nb_jobs].redirect_input > 0)
+		{
+			while (infile < data->exec[nb_jobs].redirect_input > 0)
+			{
+				printf("infile[%d]: %s\n", infile, data->exec[nb_jobs].infile[infile]);
+				infile++;
+			}
+		}
+		if (data->exec[nb_jobs].redirect_output > 0)
+		{
+			while (outfile < data->exec[nb_jobs].redirect_output > 0)
+			{
+				printf("outfile[%d]: %s\n", outfile, data->exec[nb_jobs].outfile[outfile]);
+				outfile++;
+			}
+		}
+		nb_jobs++;
 	}
 }
-/*
-void	put_redir_output_in_tab(t_data *data)
-{
-	t_list	*tmp;
-
-	tmp = data->token_list;
-	while (tmp != NULL)
-	{
-		if (tmp->type == OUTFILE)
-			data->exec.outfile = ft_strdup(tmp->content);
-		tmp = tmp->next;
-	}
-}
-
-void	put_redir_input_in_tab(t_data *data)
-{
-	t_list	*tmp;
-
-	tmp = data->token_list;
-	while (tmp != NULL)
-	{
-		if (tmp->type == INFILE)
-			data->exec.infile = ft_strdup(tmp->content);
-		tmp = tmp->next;
-	}
-}
-*/
 
 int	is_redirection(t_list *tmp)
 {
@@ -70,39 +62,37 @@ int	is_redirection(t_list *tmp)
 
 void	fill_exec(t_data *data, t_list **tmp, t_exec *current, int x)
 {
-	int	job;
-	int	y;
+	int		y;
 	t_list	*count;
-	int	flag;
+	int		flag;
 
 	y = 0;
 	flag = 0;
 	count = *tmp;
-	job = count_cmd(count);
+	current[x].nb_cmd = count_cmd(count);
 	init_exec(current, x);
-	current[x].cmd = malloc(sizeof(char *) * (job + 1));
+	current[x].cmd = malloc(sizeof(char *) * (current[x].nb_cmd + 1));
 	if (current[x].cmd == NULL)
 		exit_all(data, 1, "malloc probleme pour structure");
-	while (y < job)
+	while (y < current[x].nb_cmd)
 	{
-		count_redirections(*tmp, current, x);
 		if ((*tmp)->next != NULL && is_redirection(*tmp) == 1)
 		{
+			count_redirections(*tmp, current, x);
 			*tmp = (*tmp)->next;
 			flag = 1;
 		}
 		else
-		{
-			current[x].cmd[y] = ft_strdup((*tmp)->content);
-			printf("dup: %s\n", current[x].cmd[y]);
-			y++;
-		}
+			current[x].cmd[y++] = ft_strdup((*tmp)->content);
 		if ((*tmp)->next != NULL && flag == 0)
 			*tmp = (*tmp)->next;
 		flag = 0;
 	}
-	if ((*tmp)->next != NULL && (*tmp)->type == PIPE)
+	while ((*tmp)->next != NULL && ((*tmp)->type == PIPE || is_redirection(*tmp)))
+	{
+		count_redirections(*tmp, current, x);
 		*tmp = (*tmp)->next;
+	}
 	current[x].cmd[y] = NULL;
 }
 
@@ -126,16 +116,17 @@ void	put_cmd_in_tab(t_data *data, int nb)
 void	parse_cmd(t_data *data)
 {
 	char	*str;
+	int		i;
 
+	i = 0;
 	str = NULL;
 	str = ft_strtrim(data->input, " ");
 	split_in_list(data, str);
 	free (str);
 	assign_type(data);
-	print_all(data);
+	// print_all(data);
 	count_pipes(data);
 	put_cmd_in_tab(data, data->pipes);
-	// put_redir_input_in_tab(data);
-	// put_redir_output_in_tab(data);
+	fill_files(data);
 	print_tab(data);
 }

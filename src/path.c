@@ -6,18 +6,18 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:05:25 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/06 00:13:40 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/18 18:03:54 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-// void	print_path(t_data *data)
-// {
-// 	printf("path: %s\n", data->path.line);
-// 	printf("tab0: %s\n", data->path.tab[0]);
-// }
-
+/*
+void	print_path(t_data *data)
+{
+	printf("path: %s\n", data->path.line);
+	printf("tab0: %s\n", data->path.tab[0]);
+}
+*/
 void	parse_path(t_data *data)/* a changer, checker dans data->env plutot */
 {
 	t_list	*tmp;
@@ -31,5 +31,5 @@ void	parse_path(t_data *data)/* a changer, checker dans data->env plutot */
 	}
 	if (data->env)
 		data->path.tab = ft_split(data->path.line, ':');
-	// print_path(data);
+/*	print_path(data);*/
 }
