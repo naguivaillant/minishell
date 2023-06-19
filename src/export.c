@@ -6,132 +6,129 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:00:03 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/27 12:17:03 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/18 20:01:54 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-	/* --- Mark each name to be passed to child processes in the environment. The names
-refer to shell variables*/
-	/*If no names are supplied, a list of names of all exported variables is displayed.*/
-	/*If a variable name is followed by =value, the value of the variable is set to value.*/
-	/*The return status is zero unless 
-one of the names is not a valid shell variable name. --- */
-
-void	ft_sort(t_list *tmp, t_list *print)
+int	ft_strisalnumunderscore(char *str)
 {
-	while (print->next && print->printed == 1)
-		print = print->next;
-	while (tmp && tmp->next != NULL)
+	int	i;
+
+	i = 0;
+	while (str[i])
 	{
-		if (ft_strncmp(print->content, tmp->content, ft_strlen(tmp->content)) < 0)
-			tmp = tmp->next;
-		if (ft_strncmp(print->content, tmp->content, ft_strlen(tmp->content)) >= 0)
-		{
-			if (tmp->printed == 0)
-				print = tmp;
-			tmp = tmp->next;
-		}
-	}
-	print->printed = 1;
-	printf("declare -x %s\n", (char *)print->content);
-}
-
-void	back_to_zero(t_data *data)
-{
-	t_list	*tmp;
-
-	tmp = data->env;
-	while (tmp != NULL)
-	{
-		tmp->full = 0;
-		tmp->printed = 0;
-		// tmp->type = 0;
-		tmp = tmp->next;
-	}
-}
-
-int	add_variable(t_data *data, t_list *pos)
-{
-	t_list	*tmp;
-	t_list	*new;
-
-	new = NULL;
-	tmp = pos;
-	if (pos->next != NULL)
-	{
-		tmp = pos->next;
-		if (ft_strchr(tmp->content, '=') != 0)
-		{
-			new = ft_lstnew(tmp->content);
-			// printf("new next: %s\n", (char *)new->content);
-			ft_lstadd_back(&data->env, new);
-			// print_all(data);
-			print_env(data);
+		if (ft_isalpha(str[i]) == 0 && ft_isdigit(str[i]) == 0 && str[i] != '_')
 			return (0);
-		}
-		// else if (tmp && tmp->type != 3)/* ----- changer ici -- pour dire que si c'est une variable sans value, 
-		// 									faut quand meme l'afficher dans export mais pas dans env*/
-		// {
-		// 	// print_all(data);
-		// 	data->env->full = 1;
-		// 	return (0);
-		// }
+		i++;
 	}
-	// printf("tmp debut: %s\n", (char *)tmp->content);
-	// while (tmp->next != NULL)/* ------------- probleme ici, n'affiche pas la bonne commande */
-	// {
-	// 	if (tmp->next != NULL && ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
-	// 	{
-	// 		tmp = tmp->next;
-	// 		// printf("tmp next: %s\n", (char *)tmp->content);
-	// 		if (ft_strchr(tmp->content, '=') != 0)
-	// 		{
-	// 			new = ft_lstnew(tmp->content);
-	// 			printf("new next: %s\n", (char *)new->content);
-	// 			ft_lstadd_back(&data->env, new);
-	// 			// print_all(data);
-	// 			return (0);
-	// 		}
-	// 		else if (tmp && tmp->type != 3)/* ----- changer ici -- pour dire que si c'est une variable sans value, 
-	// 											faut quand meme l'afficher dans export mais pas dans env*/
-	// 		{
-	// 			// print_all(data);
-	// 			data->env->full = 1;
-	// 			return (0);
-	// 		}
-	// 	}
-	// 	tmp = tmp->next;
-	// }
 	return (1);
 }
 
-int	builtin_export(t_data *data, t_list *pos)
+int	variable_already_exists(t_data *data, char *name)
 {
-	t_list	*tmp;
-	t_list	*print;
-	int		count;
-	int		i;
+	t_list	*check;
 
-	tmp = NULL;
-	print = NULL;
-	count = 0;
+	check = data->env;
+	while (check != NULL)
+	{
+		if (ft_strncmp(name, check->content, ft_strlen(name)) == 0)
+			return (0);
+		check = check->next;
+	}
+	return (1);
+}
+
+void	replace_value(t_data *data, char *variable, char *name)
+{
+	t_list	*to_replace;
+	
+	to_replace = data->env;
+	while (ft_strncmp(name, to_replace->content,
+			ft_strlen(to_replace->content)) != 0
+		&& ft_strncmp(name, to_replace->content, ft_strlen(name)) != 0)
+	{
+		to_replace = to_replace->next;
+	}
+	free (to_replace->content);
+	// if (variable->next != NULL && variable->next->type == VARIABLE_VALUE)
+	// {
+	// 	to_replace->content = ft_strdup(name);
+	// 	to_replace->content = ft_strjoin(to_replace->content, "=");
+	// 	to_replace->content = ft_strjoin(to_replace->content,
+	// 			variable->next->content);
+	// }
+	// else
+		to_replace->content = ft_strdup(variable);
+}
+
+char	*extract_name(t_data *data, char *variable)
+{
+	char	*name;
+	int		i;
+	int		dup;
+
+	dup = 0;
+	i = 0;
+	name = NULL;
+	while (variable[i] != '=')
+		i++;
+	name = malloc(sizeof(char) * (i + 1));
+	if (name == NULL)
+		exit_all(data, 1, "Problem of malloc when check variable (export)");
+	while (dup < i)
+	{
+		name[dup] = variable[dup];
+		dup++;
+	}
+	name[dup] = '\0';
+	return (name);
+}
+
+void	do_export(t_data *data, char **pos)
+{
+	int		i;
+	char 	*name;
+	t_list	*new;
+	int		ret;
+
+	ret = 0;
+	name = NULL;
+	new = NULL;
+	i = 1;
+	if (ft_strchr(pos[i], '=') != 0)
+	{
+		name = extract_name(data, pos[i]);
+		if (variable_already_exists(data, name) == 0)/* gerer pb de quotes dans split list + leaks */
+			replace_value(data, pos[i], name);
+		else if ((pos[i][0] == '_' || ft_isalpha(pos[i][0]))
+			&& ft_strisalnumunderscore(name))
+		{
+			new = ft_lstnew(pos[i]);
+			new->type = ENVIRONMENT_VARIABLE;
+			new->full = 0;
+			// if (tmp->next && tmp->next->type == VARIABLE_VALUE)
+			// 	new->content = ft_strjoin(new->content, tmp->next->content);
+			ret = ft_lstadd_back(&data->env, new);
+			if (ret == 1)
+				exit_all(data, 1, "Problem of malloc when add a variable (export)");
+		}
+		free (name);
+	}
+}
+
+void	builtin_export(t_data *data, char **pos)
+{
+	int	i;
+
 	i = 0;
 	if (!data->env)
 		exit(EXIT_FAILURE);
-	if (add_variable(data, pos) == 0)
-		return (0);
-	count = count_list(data->env);
-	printf("count: %d\n", count);
-	tmp = data->env;
-	while (i < count)
+	if (pos[i + 1])
 	{
-		print = data->env;
-		tmp = data->env;
-		ft_sort(tmp, print);
-		i++;
+		do_export(data, pos);
 	}
-	back_to_zero(data);
-	return (0);
+	else
+		return ;
 }

@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:01:01 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/01 17:13:52 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/18 17:54:31 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	fill_env_list(char **env, t_data *data)
 	i = 0;
 	res = 0;
 	new = NULL;
-	// ft_bzero(new, sizeof(new));
 	if (env)
 	{
 		while (env[i])
@@ -36,7 +35,7 @@ void	fill_env_list(char **env, t_data *data)
 		}
 	}
 }
-
+/*
 int	count_list(t_list *list)
 {
 	t_list	*tmp;
@@ -51,18 +50,20 @@ int	count_list(t_list *list)
 	}
 	return (i);
 }
+*/
 
 void	print_env(t_data *data)
 {
 	t_list	*tmp;
 
 	tmp = data->env;
-	// int count = count_list(data->env);
-	// printf("count %d\n", count);
 	while (tmp)
 	{
 		if (tmp->full == 0)
-			printf("%s\n", tmp->content);
+		{
+			ft_putstr_fd(tmp->content, STDOUT_FILENO);
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		}
 		tmp = tmp->next;
 	}
 }

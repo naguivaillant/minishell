@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/01 17:06:24 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/18 18:46:39 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,20 +42,27 @@ void	ft_handler(int sig)
 
 void	exec_cmd(t_data *data)
 {
-	t_list	*tmp;
+	int	i;
+	int	y;
 
-	tmp = data->token_list;
-	while (tmp != NULL)
+	y = 0;
+	i = 0;
+	while (i < data->pipes)
 	{
-		// if (ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
-		// 	builtin_export(data, tmp);
-		if (ft_strncmp(tmp->content, "env", ft_strlen(tmp->content)) == 0)
-			print_env(data);
-		// if (ft_strncmp(tmp->content, "echo", ft_strlen(tmp->content)) == 0)
-		// 	mini_echo(data);
-		if (ft_strncmp(tmp->content, "unset", ft_strlen(tmp->content)) == 0)
-			builtin_unset(data);
-		tmp = tmp->next;
+		y = 0;
+		while (y < data->exec[i].nb_cmd)
+		{
+			if (ft_strncmp(data->exec[i].cmd[y], "export", ft_strlen(data->exec[i].cmd[y])) == 0)
+				builtin_export(data, &data->exec[i].cmd[y]);
+			if (ft_strncmp(data->exec[i].cmd[y], "env", ft_strlen(data->exec[i].cmd[y])) == 0)
+				print_env(data);
+			if (ft_strncmp(data->exec[i].cmd[y], "echo", ft_strlen(data->exec[i].cmd[y])) == 0)
+				builtin_echo_str(data, &data->exec[i].cmd[y]);
+			// if (ft_strncmp(data->exec[i].cmd[y], "unset", ft_strlen(data->exec[i].cmd[y])) == 0)
+			// 	builtin_unset(data, data->exec[i].cmd[y]);
+			y++;
+		}
+		i++;
 	}
 }
 
@@ -67,8 +74,8 @@ int	main(int argc, char **argv, char **env)
 	ft_bzero(&data, sizeof(data));
 	if (!env || env == NULL || argc != 1)
 		exit_all(&data, 1, "There is a problem with the arguments or the environment");
-	parse_path(env, &data);
 	fill_env_list(env, &data);
+	parse_path(&data);
 	while (1)
 	{
 		signal(SIGINT, ft_handler);

@@ -6,7 +6,7 @@
 #    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
-#    Updated: 2023/06/01 15:30:30 by mrabourd         ###   ########.fr        #
+#    Updated: 2023/06/18 19:53:43 by mrabourd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,15 +22,17 @@ Make		=	Make
 
 FILES = 	main					\
 			path					\
-			parsing_cmd				\
 			split_list				\
 			split_list_utils		\
 			assign_type				\
+			parsing_cmd				\
+			count_cmd				\
+			fill_redirections		\
 			env 					\
 			export					\
-			unset					\
+			eccho					\
 			exit
-			# eccho					\
+			# unset					\
 
 SRC = $(addprefix $(SRC_DIR), $(addsuffix .c, $(FILES)))
 OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(FILES)))
