@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nagvaill <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 13:15:58 by nagvaill          #+#    #+#             */
-/*   Updated: 2023/06/16 14:27:25 by nagvaill         ###   ########.fr       */
+/*   Updated: 2023/06/19 13:17:59 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,15 +72,11 @@ static	int	verify_min_one(t_exec *exec, t_list *env, char *read)
 	return (0);
 }
 
-int	pipex(char *read, t_list *env)
+int	pipex(t_data *data, t_exec *exec, t_list *env)
 {
-	t_exec	*exec;
 	int		i;
 
-	//exec = starton(); // init la struct a faire
-	if (struct_init(exec, env, read))
-		return (-1);
-	else if (exec->nbcmd == 1 && is_a_built(env, exec))
+	if (data->pipes == 1 && is_a_built(env, exec))
 		return (exec_solo_built(env, exec));
 	if (verify_min_one(exec, env, read) == -1)
 		return (-1);

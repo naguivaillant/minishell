@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 13:29:02 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/18 17:30:49 by marvin           ###   ########.fr       */
+/*   Updated: 2023/06/18 18:41:25 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <stdio.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-# include <sys/wait.h>
 # include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -42,12 +41,12 @@ typedef struct	s_exec
 	int			builtout;
 	int			redirect_input;
 	int			redirect_output;
-	int			here_doc;
+	int			heredoc;
 	int			delimiter_append;
 	int			status;
 	int			here_nb;
-	char			*here;
-	int		*pid;
+	char		*here;
+	int			*pid;
 }				t_exec;
 
 typedef struct s_data
@@ -66,6 +65,13 @@ void	print_all(t_data *data);
 /* PARSE COMMANDES */
 void	assign_type(t_data *data);
 void	parse_cmd(t_data *data);
+int	is_redirection(t_list *tmp);
+
+/* COUNT */
+int	count_cmd(t_list *tmp);
+void	count_pipes(t_data *data);
+void    count_redirections(t_list *tmp, t_exec *current, int x);
+void    init_exec(t_exec *current, int x);
 
 /* SPLIT LIST */
 int		is_metacharacter(char c);
@@ -77,7 +83,7 @@ void	add_node_single_quote(t_data *data, char *str, int i, int j);
 void	split_in_list(t_data *data, char *str);
 
 /* PATH */
-void	parse_path(char **env, t_data *data);
+void	parse_path(t_data *data);
 
 /* ENV */
 void	fill_env_list(char **env, t_data *data);
@@ -90,8 +96,8 @@ void	ft_sort(t_list *tmp, t_list *print);
 int		builtin_export(t_data *data, t_list *pos);
 
 /* ECHO */
- void	print_lines(int i, char **str, int fd);
- int		mini_echo(t_exec *cmd);
+void	print_lines(int i, char **str, int fd);
+int		mini_echo(t_data *cmd);
 
 /* UNSET */
 void	builtin_unset(t_data *data, t_list *pos);

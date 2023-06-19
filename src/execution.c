@@ -2,15 +2,13 @@
 
 int	exec_solo_built(t_list *env, t_exec *exec)
 {
-	t_path	path;
-	t_list	*pos;
 	t_data	*data;
 	char	**tab;
 
 	exec->builtin = dup(STDIN_FILENO);
 	exec->builtout = dup(STDOUT_FILENO);
 	tab = put_cmd_in_tab(data, data->pipes);
-	exec_builtins(tab, exec, data, path, pos);
+	exec_builtins(tab, exec, data, data->path);
 	free_tab(tab);
 	free(exec->pid);
 	free(exec->env);
@@ -30,7 +28,7 @@ int	exec(t_list *env, t_exec *exec, int i)
 	return (0);
 }
 
-int	is_a_built(t_list *env, t_exec *exec)
+int	is_a_built(t_data *data, t_list *env, t_exec *exec)
 {
 	char	**tab;
 	int		ret;

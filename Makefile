@@ -6,7 +6,7 @@
 #    By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 14:37:37 by nagvaill          #+#    #+#              #
-#    Updated: 2023/05/27 13:38:58 by mrabourd         ###   ########.fr        #
+#    Updated: 2023/06/18 18:41:54 by mrabourd         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,17 +26,18 @@ FILES = 	main					\
 			split_list				\
 			split_list_utils		\
 			assign_type				\
+			count					\
 			env 					\
 			export					\
 			eccho					\
 			unset					\
 			exit					\
-			aux					\
-			check_is_builtin			\
-			exec_builtins				\
+			aux						\
+			check_is_builtin		\
+			exec_builtins			\
 			execution				\
 			pipex					\
-			pipex_direction				\
+			pipex_direction			\
 			pipex_utils				\
 			safe_zone				\
 

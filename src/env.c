@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:01:01 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/01 17:13:52 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/06 01:43:22 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,11 @@ void	print_env(t_data *data)
 	while (tmp)
 	{
 		if (tmp->full == 0)
-			printf("%s\n", tmp->content);
+		{
+			ft_putstr_fd(tmp->content, STDOUT_FILENO);
+			ft_putstr_fd("\n", STDOUT_FILENO);
+			// printf("%s\n", tmp->content);
+		}
 		tmp = tmp->next;
 	}
 }

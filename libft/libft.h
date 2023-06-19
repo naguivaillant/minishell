@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 15:20:31 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/22 18:03:10 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/06 01:57:46 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ typedef enum	e_type
 	OPTION,
 	INFILE,
 	OUTFILE,
-	REDIRECT_INPUT,
-	REDIRECT_OUTPUT,
-	DELIMITER_INPUT,
-	DELIMITER_APPEND,
+	REDIRECT_INPUT,		/* < */
+	REDIRECT_OUTPUT,	/* > */
+	DELIMITER_INPUT,	/* << */
+	DELIMITER_APPEND,	/* >> */
 	DOLLAR,
 	EPERLUETTE,
 	WORD,

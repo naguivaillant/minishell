@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 13:16:30 by nagvaill          #+#    #+#             */
-/*   Updated: 2023/06/18 17:14:24 by marvin           ###   ########.fr       */
+/*   Updated: 2023/06/19 13:21:30 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	builtins_finder(char **cmd)
 	return (0);
 }
 
-void	exec_builtins(char **cmd, t_exec *exec, t_data *data, t_list *pos)
+void	exec_builtins(char **cmd, t_exec *exec, t_data *data)
 {
 	char	*pwd;
 
@@ -49,9 +49,9 @@ void	exec_builtins(char **cmd, t_exec *exec, t_data *data, t_list *pos)
 		ft_putchar_fd('\n', 1);
 	}
 	else if (!ft_strncmp(cmd[0], "export", 6))
-		builtin_export(data, pos);
+		builtin_export(data);
 	else if (!ft_strncmp(cmd[0], "unset", 5))
-		builtin_unset(data, pos);
+		builtin_unset(data);
 	else if (!ft_strncmp(cmd[0], "env", 3))
 		print_env(data);
 	else if (!ft_strncmp(cmd[0], "exit", 4))

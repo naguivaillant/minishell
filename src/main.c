@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/16 17:58:12 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 13:17:35 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,24 +40,24 @@ void	ft_handler(int sig)
 	}
 }
 
-void	exec_cmd(t_data *data)
-{
-	t_list	*tmp;
+// void	exec_cmd(t_data *data)
+// {
+// 	t_list	*tmp;
 
-	tmp = data->token_list;
-	while (tmp != NULL)
-	{
-		if (ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
-			builtin_export(data, tmp);
-		if (ft_strncmp(tmp->content, "env", ft_strlen(tmp->content)) == 0)
-			print_env(data);
-		// if (ft_strncmp(tmp->content, "echo", ft_strlen(tmp->content)) == 0)
-		// 	mini_echo(data);
-		if (ft_strncmp(tmp->content, "unset", ft_strlen(tmp->content)) == 0)
-			builtin_unset(data, tmp);
-		tmp = tmp->next;
-	}
-}
+// 	tmp = data->token_list;
+// 	while (tmp != NULL)
+// 	{
+// 		if (ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
+// 			builtin_export(data, tmp);
+// 		if (ft_strncmp(tmp->content, "env", ft_strlen(tmp->content)) == 0)
+// 			print_env(data);
+// 		// if (ft_strncmp(tmp->content, "echo", ft_strlen(tmp->content)) == 0)
+// 		// 	mini_echo(data);
+// 		if (ft_strncmp(tmp->content, "unset", ft_strlen(tmp->content)) == 0)
+// 			builtin_unset(data, tmp);
+// 		tmp = tmp->next;
+// 	}
+// }
 
 int	main(int argc, char **argv, char **env)
 {
@@ -67,8 +67,8 @@ int	main(int argc, char **argv, char **env)
 	ft_bzero(&data, sizeof(data));
 	if (!env || env == NULL || argc != 1)
 		exit_all(&data, 1, "There is a problem with the arguments or the environment");
-	parse_path(env, &data);
 	fill_env_list(env, &data);
+	parse_path(&data);
 	while (1)
 	{
 		signal(SIGINT, ft_handler);
@@ -79,9 +79,8 @@ int	main(int argc, char **argv, char **env)
 			exit_all(&data, 0, NULL);
 		}
 		add_history(data.input);
-		parse_cmd(&data);	
-		exec_cmd(&data);
-		// execution(&data); -> nagui
+		parse_cmd(&data);
+		pipex(data, data->exec, data->env);
 		clear_cmd(&data);
 	}
 	return (0);
