@@ -6,12 +6,12 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/13 15:33:34 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/24 16:26:29 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 18:03:20 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
+/*
 void	first_variable_unset(t_data *data, t_list *node, char *var, t_list *tmp)
 {
 	node = tmp;
@@ -66,3 +66,4 @@ void	builtin_unset(t_data *data, t_list *to_unset)
 			return ;
 	}
 }
+*/

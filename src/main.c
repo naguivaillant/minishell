@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/18 18:02:07 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 15:06:05 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,31 +40,24 @@ void	ft_handler(int sig)
 	}
 }
 
-void	exec_cmd(t_data *data)
-{
-	int	i;
-	int	y;
+// void	exec_cmd(t_data *data)
+// {
+// 	t_list	*tmp;
 
-	y = 0;
-	i = 0;
-	while (i < data->pipes)
-	{
-		y = 0;
-		while (y < data->exec[i].nb_cmd)
-		{
-			// if (ft_strncmp(data->exec[i].cmd[y], "export", ft_strlen(data->exec[i].cmd[y])) == 0)
-			// 	builtin_export(data, data->exec[i].cmd[y]);
-			if (ft_strncmp(data->exec[i].cmd[y], "env", ft_strlen(data->exec[i].cmd[y])) == 0)
-				print_env(data);
-			if (ft_strncmp(data->exec[i].cmd[y], "echo", ft_strlen(data->exec[i].cmd[y])) == 0)
-				builtin_echo_str(data, &data->exec[i].cmd[y]);
-			// if (ft_strncmp(data->exec[i].cmd[y], "unset", ft_strlen(data->exec[i].cmd[y])) == 0)
-			// 	builtin_unset(data, data->exec[i].cmd[y]);
-			y++;
-		}
-		i++;
-	}
-}
+// 	tmp = data->token_list;
+// 	while (tmp != NULL)
+// 	{
+// 		if (ft_strncmp((char *)tmp->content, "export", ft_strlen(tmp->content)) == 0)
+// 			builtin_export(data, tmp);
+// 		if (ft_strncmp(tmp->content, "env", ft_strlen(tmp->content)) == 0)
+// 			print_env(data);
+// 		// if (ft_strncmp(tmp->content, "echo", ft_strlen(tmp->content)) == 0)
+// 		// 	mini_echo(data);
+// 		if (ft_strncmp(tmp->content, "unset", ft_strlen(tmp->content)) == 0)
+// 			builtin_unset(data, tmp);
+// 		tmp = tmp->next;
+// 	}
+// }
 
 int	main(int argc, char **argv, char **env)
 {
@@ -86,9 +79,8 @@ int	main(int argc, char **argv, char **env)
 			exit_all(&data, 0, NULL);
 		}
 		add_history(data.input);
-		parse_cmd(&data);	
-		exec_cmd(&data);
-		// execution(&data); -> nagui
+		parse_cmd(&data);
+		pipex_heart(&data);
 		clear_cmd(&data);
 	}
 	return (0);

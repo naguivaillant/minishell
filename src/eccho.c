@@ -1,4 +1,3 @@
-
 #include "../include/minishell.h"
 
 void	print_lines(int i, char **str, int fd)
@@ -12,7 +11,7 @@ void	print_lines(int i, char **str, int fd)
 	}
 }
 
-void	builtin_echo_str(t_data *data, char **cmd)
+int	mini_echo(t_data *data, char **cmd)
 {
 	int		i;
 	int		j;
@@ -37,4 +36,5 @@ void	builtin_echo_str(t_data *data, char **cmd)
 		print_lines(i, cmd, STDOUT_FILENO);
 		ft_putchar_fd('\n', STDOUT_FILENO);
 	}
+	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 16:00:03 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/05/27 12:17:03 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/18 20:01:54 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,23 +26,6 @@ int	ft_strisalnumunderscore(char *str)
 	return (1);
 }
 
-char	*extract_name(t_data *data, t_list *variable)
-{
-	char	*name;
-	int		i;
-
-	i = 0;
-	name = NULL;
-	variable->type = VARIABLE_NAME;
-	while (variable->content[i] != '=')
-		i++;
-	name = malloc(sizeof(char) * (i + 1));
-	if (name == NULL)
-		exit_all(data, 1, "Problem of malloc when check variable (export)");
-	ft_strlcpy(name, variable->content, (i + 1));
-	return (name);
-}
-
 int	variable_already_exists(t_data *data, char *name)
 {
 	t_list	*check;
@@ -57,10 +40,10 @@ int	variable_already_exists(t_data *data, char *name)
 	return (1);
 }
 
-void	replace_value(t_data *data, t_list *variable, char *name)
+void	replace_value(t_data *data, char *variable, char *name)
 {
 	t_list	*to_replace;
-
+	
 	to_replace = data->env;
 	while (ft_strncmp(name, to_replace->content,
 			ft_strlen(to_replace->content)) != 0
@@ -69,59 +52,83 @@ void	replace_value(t_data *data, t_list *variable, char *name)
 		to_replace = to_replace->next;
 	}
 	free (to_replace->content);
-	if (variable->next != NULL && variable->next->type == VARIABLE_VALUE)
-	{
-		to_replace->content = ft_strdup(name);
-		to_replace->content = ft_strjoin(to_replace->content, "=");
-		to_replace->content = ft_strjoin(to_replace->content,
-				variable->next->content);
-	}
-	else
-		to_replace->content = ft_strdup(variable->content);
+	// if (variable->next != NULL && variable->next->type == VARIABLE_VALUE)
+	// {
+	// 	to_replace->content = ft_strdup(name);
+	// 	to_replace->content = ft_strjoin(to_replace->content, "=");
+	// 	to_replace->content = ft_strjoin(to_replace->content,
+	// 			variable->next->content);
+	// }
+	// else
+		to_replace->content = ft_strdup(variable);
 }
 
-int	add_variable(t_data *data, t_list *pos)
+char	*extract_name(t_data *data, char *variable)
 {
-	t_list	*tmp;
+	char	*name;
+	int		i;
+	int		dup;
+
+	dup = 0;
+	i = 0;
+	name = NULL;
+	while (variable[i] != '=')
+		i++;
+	name = malloc(sizeof(char) * (i + 1));
+	if (name == NULL)
+		exit_all(data, 1, "Problem of malloc when check variable (export)");
+	while (dup < i)
+	{
+		name[dup] = variable[dup];
+		dup++;
+	}
+	name[dup] = '\0';
+	return (name);
+}
+
+void	do_export(t_data *data, char **pos)
+{
+	int		i;
+	char 	*name;
 	t_list	*new;
 	int		ret;
-	char	*name;
 
 	ret = 0;
-	new = NULL;
-	tmp = pos;
 	name = NULL;
-	if (pos->next != NULL)
+	new = NULL;
+	i = 1;
+	if (ft_strchr(pos[i], '=') != 0)
 	{
-		tmp = pos->next;
-		if (ft_strchr(tmp->content, '=') != 0)
+		name = extract_name(data, pos[i]);
+		if (variable_already_exists(data, name) == 0)/* gerer pb de quotes dans split list + leaks */
+			replace_value(data, pos[i], name);
+		else if ((pos[i][0] == '_' || ft_isalpha(pos[i][0]))
+			&& ft_strisalnumunderscore(name))
 		{
-			name = extract_name(data, tmp);
-			if (variable_already_exists(data, name) == 0) /*name existe deja*/
-				replace_value(data, tmp, name);
-			else if ((tmp->content[0] == '_' || ft_isalpha(tmp->content[0]))
-				&& ft_strisalnumunderscore(name))
-			{
-				new = ft_lstnew(tmp->content);
-				new->type = ENVIRONMENT_VARIABLE;
-				new->full = 0;
-				if (tmp->next && tmp->next->type == VARIABLE_VALUE)
-					new->content = ft_strjoin(new->content, tmp->next->content);
-				ret = ft_lstadd_back(&data->env, new);
-				if (ret == 1)
-					exit_all(data, 1, "Problem of malloc when add a variable (export)");
-			}
-			free (name);
+			new = ft_lstnew(pos[i]);
+			new->type = ENVIRONMENT_VARIABLE;
+			new->full = 0;
+			// if (tmp->next && tmp->next->type == VARIABLE_VALUE)
+			// 	new->content = ft_strjoin(new->content, tmp->next->content);
+			ret = ft_lstadd_back(&data->env, new);
+			if (ret == 1)
+				exit_all(data, 1, "Problem of malloc when add a variable (export)");
 		}
+		free (name);
 	}
-	return (1);
 }
 
-int	builtin_export(t_data *data, t_list *pos)
+void	builtin_export(t_data *data, char **pos)
 {
+	int	i;
+
+	i = 0;
 	if (!data->env)
 		exit(EXIT_FAILURE);
-	if (add_variable(data, pos) == 0)/* probleme si value est entre quotes */
-		return (0);
-	return (0);
+	if (pos[i + 1])
+	{
+		do_export(data, pos);
+	}
+	else
+		return ;
 }
