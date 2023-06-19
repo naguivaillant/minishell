@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 17:33:03 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/06 02:34:41 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 16:53:30 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ void	exit_all(t_data *data, int err, char *str)
 	// }
 	// if (data->token_list && data->token_list != NULL)
 	// 	ft_lstclear(&data->token_list, del);
+	if (data->env_tab && data->env_tab != NULL)
+		free_tab(data->env_tab);
 	if (data->path.tab && data->path.tab != NULL)
 		free_tab(data->path.tab);
 	if (data->path.line && data->path.line != NULL)

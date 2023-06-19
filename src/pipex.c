@@ -6,18 +6,14 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 13:15:58 by nagvaill          #+#    #+#             */
-/*   Updated: 2023/06/19 13:17:59 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:47:16 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	child_process(t_exec *exec, t_list *env, int i)
+void	child_process(t_data *data, t_exec *exec)
 {
-	char	**cmd;
-
-	exec->index = i;
-	free(exec->pid);
 /*	cmd = start_cmd_tab(exec, env, exec->av[i], 2);
 	if (!cmd)
 	{
@@ -26,40 +22,43 @@ void	child_process(t_exec *exec, t_list *env, int i)
 		free_exec_env(env, exec, NULL, 1);
 		exit(0);
 	}*/
-	if (builtins_finder(cmd))
-		exec_builtins(cmd, exec, env, 1);
-	if (cmd[0])
-		exec->cmd_state = cmd_final_state(exec, cmd[0]);
+	fprintf(stderr, "enfant\n");
+	if (builtins_finder(exec->cmd))
+		exec_builtins(data, exec->cmd, exec);
+	if (exec->cmd[0])
+		exec->cmd_state = cmd_final_state(data, exec->cmd[0]);
+	fprintf(stderr, "cmd state: %s\n", exec->cmd_state);
 	if (exec->cmd /*&& !isntempty(cmd)*/)
-		safe_exe(exec, cmd, exec->env);
-	child_aux(env, exec, cmd);
+		safe_exe(data, exec);
+	child_aux(exec);
 	exit(127);
 }
 
-void	waitin(t_exec *exec)
+void	waitin(t_data *data, t_exec *exec)
 {
 	int	i;
 
 	i = -1;
-	while (++i < exec->nbcmd)
+	while (++i < data->pipes)
 	{
-		waitpid(exec->pid[i], &exec->status, 0);
+		waitpid(exec->pid, &exec->status, 0);
 		if (WIFEXITED(exec->status))
 			exec->status = WEXITSTATUS(exec->status);
 	}
 }
 
-void	parent_process(t_exec *exec)
+void	parent_process(t_data *data, t_exec *exec)
 {
-	safe_close(exec->pipefd[1]);
-	if (exec->prev_pipe != -1)
-		safe_close(exec->prev_pipe);
-	exec->prev_pipe = exec->pipefd[0];
+	fprintf(stderr, "parent\n");
+	safe_close(exec->fdout);
+	if (data->prev_pipe != -1)
+		safe_close(data->prev_pipe);
+	data->prev_pipe = exec->fdin;
 }
-
-static	int	verify_min_one(t_exec *exec, t_list *env, char *read)
+/*
+static	int	verify_min_one(t_exec *exec, t_list *env)
 {
-//	exec->here_nb = count_hd(read);
+//	exec->heredoc = count_hd(read);
 //	if (here_alloc(exec))
 //		return (-1);
 	if (pipex_hd_aux(env, data))
@@ -72,20 +71,26 @@ static	int	verify_min_one(t_exec *exec, t_list *env, char *read)
 	return (0);
 }
 
-int	pipex(t_data *data, t_exec *exec, t_list *env)
+int	pipex(t_data *data, t_exec *exec)
 {
 	int		i;
+	int		j;
 
-	if (data->pipes == 1 && is_a_built(env, exec))
-		return (exec_solo_built(env, exec));
-	if (verify_min_one(exec, env, read) == -1)
-		return (-1);
-	safe_close(exec->pipefd[0]); // a faire
-	waitin(exec);
-	i = -1;
-	while (++i < exec->here_nb)
-		safe_close(exec->here[i].pipe[0]); //
-//	free_exec_env(env, exec, NULL, 4);
-//	exec->here_cmp = 0;
+	j = 0;
+	if (data->pipes == 1 && is_a_built_na(data, exec))
+		return (exec_solo_built(data));
+	// if (verify_min_one(exec, env) == -1)
+	// 	return (-1);
+	while (j < data->pipes)
+	{
+		safe_close(exec[j].fdin);
+		waitin(data, &exec[j]);
+		i = -1;
+		while (++i < exec[j].heredoc)
+			safe_close(exec[j].here[i]);
+	//	free_exec_env(env, exec, NULL, 4);
+	//	exec->here_cmp = 0;
+		j++;
+	}
 	return (exec->status);
-}
+}*/

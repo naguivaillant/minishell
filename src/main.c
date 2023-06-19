@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 18:07:16 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/19 13:17:35 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 15:06:05 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	main(int argc, char **argv, char **env)
 		}
 		add_history(data.input);
 		parse_cmd(&data);
-		pipex(data, data->exec, data->env);
+		pipex_heart(&data);
 		clear_cmd(&data);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 13:29:02 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/18 18:41:25 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:46:53 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <errno.h>
+# include <sys/wait.h>
 # include "../libft/libft.h"
 
 typedef struct s_path
@@ -33,6 +35,7 @@ typedef struct s_path
 typedef struct	s_exec
 {
 	char		**cmd;
+	char		*cmd_state;
 	char		**infile;
 	char		**outfile;
 	int			fdin;
@@ -44,18 +47,19 @@ typedef struct	s_exec
 	int			heredoc;
 	int			delimiter_append;
 	int			status;
-	int			here_nb;
 	char		*here;
-	int			*pid;
+	pid_t		pid;
 }				t_exec;
 
 typedef struct s_data
 {
 	int			pipes;
 	char		*input;
+	int			prev_pipe;
 	t_exec		*exec;
 	t_list		*token_list;
 	t_list		*env;
+	char		**env_tab;
 	t_path		path;
 }				t_data;
 
@@ -91,41 +95,41 @@ int		count_list(t_list *list);
 void	print_env(t_data *data);
 
 /* EXPORT */
-char	*extract_name(t_data *data, t_list *variable);
+char	*extract_name(t_data *data, char *variable);
 void	ft_sort(t_list *tmp, t_list *print);
-int		builtin_export(t_data *data, t_list *pos);
+void	builtin_export(t_data *data, char **pos);
 
 /* ECHO */
 void	print_lines(int i, char **str, int fd);
-int		mini_echo(t_data *cmd);
+int		mini_echo(t_data *data, char **cmd);
 
 /* UNSET */
 void	builtin_unset(t_data *data, t_list *pos);
 
 /*EXEC */
-int     exec_solo_built(t_list *env, t_exec *exec);
-int     exec(t_list *env, t_exec *exec, int i);
-int     is_a_built(t_list *env, t_exec *exec);
-int     pipex_heart(t_list *env, t_exec *exec);
-void    child_process(t_exec *exec, t_list *env, int i);
-void    waitin(t_exec *exec);
-void    parent_process(t_exec *exec);
-int     pipex(char *read, t_list *env);
+int		exec_solo_built(t_data *data);
+int		exec(t_data *data, t_exec *exec);
+int		is_a_built_na(t_data *data, t_exec *exec);
+int		pipex_heart(t_data *data);
+void	child_process(t_data *data, t_exec *exec);
+void	waitin(t_data *data, t_exec *exec);
+void    parent_process(t_data *data, t_exec *exec);
+int		pipex(t_data *data, t_exec *exec);
 int     struct_init(t_exec *exec, t_list *env, char *read);
 void    free_tab(char **tab);
 char    **get_cmd_path(t_exec *exec);
-char    *cmd_final_state(t_exec *exec, char *cmd);
+char    *cmd_final_state(t_data *data, char *cmd);
 int     heredoc_count(char **tab);
 void    dup_n_close(int oldfd, int newfd);
 int     isaredirection(char *str);
 void    redir_finder(t_exec *exec, t_list *env, char **cmd, int toggle);
 int     builtins_finder(char **cmd);
-void    exec_builtins(char **cmd, t_exec *exec, t_data *data, t_list *pos);
+void	exec_builtins(t_data *data, char **cmd, t_exec *exec);
 int     safe_piping(int *pipefd);
-void    safe_exe(t_exec *exec, char **cmd, char **env);
+void	safe_exe(t_data *data, t_exec *exec);
 void    safe_close(int fd);
 void    safe_dup(int oldfd, int newfd);
-void    child_aux(t_exec *exec, char **cmd);
+void	child_aux(t_exec *exec);
 int     pipex_aux(t_exec *exec);
 int     pipex_hd_aux(t_exec *exec);
 

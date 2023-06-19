@@ -11,7 +11,7 @@ void	print_lines(int i, char **str, int fd)
 	}
 }
 
-int	builtin_echo_str(t_data *data, char **cmd)
+int	mini_echo(t_data *data, char **cmd)
 {
 	int		i;
 	int		j;

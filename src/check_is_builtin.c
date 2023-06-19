@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 13:16:16 by nagvaill          #+#    #+#             */
-/*   Updated: 2023/06/18 18:37:50 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 15:59:52 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	check_is_builtin(t_exec *exec, t_data *data, int i, t_list *path, t_list *po
 	char	*pwd;
 
 	if (ft_strncmp(exec->cmd[i], "echo", 4))
-		return (mini_echo(exec));
+		return (mini_echo(data, exec->cmd));
 //	else if (ft_strncmp(exec->cmd[i], "cd", 2))
 //		return (run_cd(args));
 	else if (ft_strncmp(exec->cmd[i], "unset", 5))

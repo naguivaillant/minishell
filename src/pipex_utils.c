@@ -6,40 +6,27 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 13:17:12 by nagvaill          #+#    #+#             */
-/*   Updated: 2023/06/18 18:39:03 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 16:56:48 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_tab(char **tab)
-{
-	int	i;
+// char	**get_cmd_path(t_data *data)
+// {
+// 	int	i;
 
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
-
-char	**get_cmd_path(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (data->env && data->env[i])
-	{
-		if (!strncmp(data->env[i], "PATH=", 5))
-		{
-			return (ft_split(data->env[i] + 5, ':'));
-		}
-		i++;
-	}
-	return (NULL);
-}
+// 	i = 0;
+// 	while (data->env && data->env[i])
+// 	{
+// 		if (!strncmp(data->env[i], "PATH=", 5))
+// 		{
+// 			return (ft_split(data->env[i] + 5, ':'));
+// 		}
+// 		i++;
+// 	}
+// 	return (NULL);
+// }
 
 char	*cmd_final_state(t_data *data, char *cmd)
 {
@@ -53,14 +40,15 @@ char	*cmd_final_state(t_data *data, char *cmd)
 		if (access(cmd, F_OK | X_OK) != -1)
 			return (cmd);
 	}
-	data->path = get_cmd_path(data);
-	if (!data->path)
-		return (NULL);
-	while (data->path[i])
+	// if (!data->path)
+	// 	return (NULL);
+	while (data->path.tab[i])
 	{
-		tmp = ft_strjoin(data->path[i], "/");
+		fprintf(stderr, "path: %s\n", data->path.tab[i]);
+		tmp = ft_strjoin(data->path.tab[i], "/");
+		fprintf(stderr, "tmp: %s\n", tmp);
 		new = ft_strjoin(tmp, cmd);
-		free(tmp);
+		// free(tmp);
 		if (access(new, F_OK | X_OK) != -1)
 			return (new);
 		free(new);

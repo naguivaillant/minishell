@@ -6,7 +6,7 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 01:50:06 by mrabourd          #+#    #+#             */
-/*   Updated: 2023/06/06 03:20:47 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:34:02 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,11 @@ void    init_exec(t_exec *current, int x)
     // current->outfile = NULL;
     current[x].fdin = 0;
     current[x].fdout = 1;
+	current[x].builtin = 0;
+    current[x].builtout = 0;
     current[x].redirect_input = 0;
     current[x].redirect_output = 0;
     current[x].heredoc = 0;
     current[x].delimiter_append = 0;
+	current[x].status = 0;
 }

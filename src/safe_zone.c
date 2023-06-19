@@ -6,11 +6,11 @@
 /*   By: mrabourd <mrabourd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 13:20:31 by nagvaill          #+#    #+#             */
-/*   Updated: 2023/06/18 18:39:17 by mrabourd         ###   ########.fr       */
+/*   Updated: 2023/06/19 16:22:49 by mrabourd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
 int	safe_piping(int *pipefd)
 {
@@ -22,9 +22,9 @@ int	safe_piping(int *pipefd)
 	return (0);
 }
 
-void	safe_exe(t_data *data, char **cmd, char **env)
+void	safe_exe(t_data *data, t_exec *exec)
 {
-	if (execve(data->cmd, cmd, env) == -1)
+	if (execve(exec->cmd_state, exec->cmd, data->env_tab) == -1)
 	{
 		perror("exceve");
 		exit(errno);
